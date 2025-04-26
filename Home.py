@@ -1,0 +1,27 @@
+# app.py
+from kivy.app import App
+from kivy.uix.screenmanager import ScreenManager
+from kivy.lang import Builder
+from InS import InSp
+from CrS import CrSp
+from Inicio import Iniciop
+from Entr import Entrp
+from Config import Configp
+from Stats import Statsp
+
+class GymApp(App):
+    def build(self):
+        Builder.load_file("InS.kv")
+        Builder.load_file("CrS.kv")
+        sm = ScreenManager()
+        sm.add_widget(InSp(name='pantalla1'))
+        sm.add_widget(CrSp(name='pantalla2'))
+        sm.add_widget(Iniciop(name='pantalla3'))
+        sm.add_widget(Entrp(name='pantalla4'))
+        sm.add_widget(Configp(name='pantalla5'))
+        sm.add_widget(Statsp(name='pantalla6'))
+        sm.current = 'pantalla1'
+        return sm
+
+if __name__ == '__main__':
+    GymApp().run()

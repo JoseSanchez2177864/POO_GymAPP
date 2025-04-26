@@ -1,0 +1,51 @@
+<CrSp>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 20
+        spacing: 10
+        Label:
+            text: "Bienvenido al Gym App"
+
+#Box de Datos
+    BoxLayout:
+        size_hint_y: None
+        height: 60
+
+    TextInput:
+        hint_text: "Escribe tu nombre aquÃƒÆ’Ã‚Â­Ãƒâ€šÃ‚Â­"
+        font_size: 18
+        size_hint_y: None
+        height: 40
+
+    TextInput:
+        hint_text: "Escribe tu correoÃ‚Â­"
+        font_size: 18
+        size_hint_y: None
+        height: 40
+
+    TextInput:
+        hint_text: "ContraseÃƒÆ’Ã‚Â±aÃƒâ€šÃ‚Â­"
+        password: True
+        font_size: 18
+        size_hint_y: None
+        height: 40
+
+#Box de botones
+    BoxLayout:
+        size_hint_y: None
+        height: 30
+
+    Button:
+        text: 'Crear Cuenta'
+        font_size: 18
+        size_hint_y: None
+        height: 30
+        on_release:
+            app.root.current = 'pantalla3'
+
+    Label:
+        text: "[ref=registro]Ãƒâ€šÃ‚Â¿Ya tienes una cuenta? Inicia SesiÃƒÂ³n aquÃƒÂ­"
+        markup: True
+        color: 0, 0, 1, 1  # azul
+        on_ref_press:
+            app.root.current = 'pantalla1'

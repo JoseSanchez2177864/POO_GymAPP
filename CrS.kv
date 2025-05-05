@@ -1,51 +1,69 @@
 <CrSp>:
     BoxLayout:
         orientation: 'vertical'
-        padding: 20
-        spacing: 10
+        padding: 40
+        spacing: 40
+
         Label:
             text: "Bienvenido al Gym App"
+            font_size: 28
+            size_hint_y: None
+            height: 50
+            halign: 'center'
+            valign: 'middle'
+            text_size: self.size
 
-#Box de Datos
-    BoxLayout:
-        size_hint_y: None
-        height: 60
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
+            height: 120
+            spacing: 10
 
-    TextInput:
-        hint_text: "Escribe tu nombre aquÃƒÆ’Ã‚Â­Ãƒâ€šÃ‚Â­"
-        font_size: 18
-        size_hint_y: None
-        height: 40
+            TextInput:
+                hint_text: "Escribe tu nombre aquí"
+                font_size: 18
+                size_hint_y: None
+                height: 40
 
-    TextInput:
-        hint_text: "Escribe tu correoÃ‚Â­"
-        font_size: 18
-        size_hint_y: None
-        height: 40
+            TextInput:
+                hint_text: "Escribe tu correo aquí"
+                password: True
+                font_size: 18
+                size_hint_y: None
+                height: 40
+            
+            TextInput:
+                hint_text: "Escribe tu contraseña aquí"
+                password: True
+                font_size: 18
+                size_hint_y: None
+                height: 40
 
-    TextInput:
-        hint_text: "ContraseÃƒÆ’Ã‚Â±aÃƒâ€šÃ‚Â­"
-        password: True
-        font_size: 18
-        size_hint_y: None
-        height: 40
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 50
+            spacing: 10
+            padding: [50, 0]
 
-#Box de botones
-    BoxLayout:
-        size_hint_y: None
-        height: 30
+            Button:
+                text: 'Crear cuenta'
+                font_size: 18
+                size_hint: (1, None)
+                height: 40
+                on_release:
+                    app.root.current = 'pantalla3'
 
-    Button:
-        text: 'Crear Cuenta'
-        font_size: 18
-        size_hint_y: None
-        height: 30
-        on_release:
-            app.root.current = 'pantalla3'
+        Label:
+            text: "[ref=registro]¿Ya tienes tu cuenta? Inicia Sesión Aquí[/ref]"
+            markup: True
+            color: 0, 0, 1, 1
+            font_size: 16
+            size_hint_y: None
+            height: 30
+            halign: 'center'
+            valign: 'middle'
+            text_size: self.size
+            on_ref_press:
+                app.root.current = 'pantalla1'
 
-    Label:
-        text: "[ref=registro]Ãƒâ€šÃ‚Â¿Ya tienes una cuenta? Inicia SesiÃƒÂ³n aquÃƒÂ­"
-        markup: True
-        color: 0, 0, 1, 1  # azul
-        on_ref_press:
-            app.root.current = 'pantalla1'

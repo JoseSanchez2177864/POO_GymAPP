@@ -1,53 +1,61 @@
 <InSp>:
     BoxLayout:
         orientation: 'vertical'
-        padding: 20
-        spacing: 10
+        padding: 40
+        spacing: 20
+
         Label:
             text: "Bienvenido al Gym App"
-            font_size: 24
-
-    # Box de Datos
-    BoxLayout:
-        orientation: 'vertical'
-        size_hint_y: None
-        height: 120
-        spacing: 10
-
-        TextInput:
-            hint_text: "Escribe tu nombre aquÃƒÂ­"
-            font_size: 18
+            font_size: 28
             size_hint_y: None
-            height: 40
+            height: 50
+            halign: 'center'
+            valign: 'middle'
+            text_size: self.size
 
-        TextInput:
-            hint_text: "ContraseÃƒÂ±a"
-            password: True
-            font_size: 18
+        BoxLayout:
+            orientation: 'vertical'
             size_hint_y: None
-            height: 40
+            height: 120
+            spacing: 10
 
-    # Box de botones
-    BoxLayout:
-        orientation: 'horizontal'
-        size_hint_y: None
-        height: 40
-        spacing: 10
+            TextInput:
+                hint_text: "Escribe tu nombre aquí"
+                font_size: 18
+                size_hint_y: None
+                height: 40
 
-        Button:
-            text: 'Iniciar SesiÃƒÂ³n'
-            font_size: 18
+            TextInput:
+                hint_text: "Contraseña"
+                password: True
+                font_size: 18
+                size_hint_y: None
+                height: 40
+
+        BoxLayout:
+            orientation: 'horizontal'
             size_hint_y: None
-            height:
-            on_release:
-                app.root.current = 'pantalla3'
+            height: 50
+            spacing: 10
+            padding: [50, 0]
 
-    # Texto con hipervÃƒÂ­nculo
-    BoxLayout:
-    Label:
-        text: "[ref=registro]Ã‚Â¿No tienes cuenta? RegÃƒÂ­strate aquÃƒÂ­[/ref]"
-        markup: True
-        color: 0, 0, 1, 1
-        font_size: 16
-        on_ref_press:
-            app.root.current = 'pantalla2'
+            Button:
+                text: 'Iniciar Sesión'
+                font_size: 18
+                size_hint: (1, None)
+                height: 40
+                on_release:
+                    app.root.current = 'pantalla3'
+
+        Label:
+            text: "[ref=registro]¿No tienes cuenta? Regístrate aquí[/ref]"
+            markup: True
+            color: 0, 0, 1, 1
+            font_size: 16
+            size_hint_y: None
+            height: 30
+            halign: 'center'
+            valign: 'middle'
+            text_size: self.size
+            on_ref_press:
+                app.root.current = 'pantalla2'

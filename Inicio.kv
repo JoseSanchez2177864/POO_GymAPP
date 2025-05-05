@@ -1,0 +1,99 @@
+<Iniciop>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 10
+        spacing: 10
+
+        # Barra superior
+        BoxLayout:
+            size_hint_y: None
+            height: 60
+            padding: 10
+            spacing: 10
+
+            Button:
+                text: '≡'  # Menú
+                size_hint_x: 0.1
+
+            Widget:  # Espaciador
+
+            Button:
+                text: '👤'
+                size_hint_x: 0.1
+
+            Button:
+                text: '⚙'  # Configuración
+                size_hint_x: 0.1
+
+        # Último entrenamiento
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
+            height: 120
+            padding: 10
+            spacing: 5
+            canvas.before:
+                Color:
+                    rgba: 0.9, 0.9, 0.9, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            Label:
+                text: "💪  [b]Último entrenamiento[/b]"
+                markup: True
+                font_size: 20
+                halign: 'left'
+                text_size: self.size
+
+            Label:
+                text: "Press de banca\n45 min\n350 cal"
+                font_size: 16
+                halign: 'left'
+                valign: 'top'
+                text_size: self.size
+
+        # Progreso
+        Label:
+            text: "[b]PROGRESO[/b]"
+            markup: True
+            font_size: 18
+            size_hint_y: None
+            height: 30
+
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
+            height: 160
+            padding: 10
+            canvas.before:
+                Color:
+                    rgba: 1, 1, 1, 1
+                Line:
+                    rectangle: self.x, self.y, self.width, self.height
+
+            Label:
+                text: "[i]Aquí iría el gráfico[/i]"
+                font_size: 16
+                color: 0.4, 0.4, 0.4, 1
+
+        Button:
+            text: "INICIO RÁPIDO"
+            size_hint_y: None
+            height: 50
+            font_size: 18
+
+        # Navegación inferior
+        BoxLayout:
+            size_hint_y: None
+            height: 60
+            spacing: 10
+
+            Button:
+                text: "🏠"
+            Button:
+                text: "➕"
+            Button:
+                text: "📊"
+            Button:
+                text: "👤"

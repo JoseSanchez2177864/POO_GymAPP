@@ -68,6 +68,10 @@ class CrSp(Screen):
 
             conn.commit()
             print("✅ Usuario y rol registrados correctamente.")
+
+# Justo después de insertar el usuario y antes de cambiar de pantalla
+            App.get_running_app().usuario_actual = nombre_usuario
+            App.get_running_app().es_nuevo = True  # Marcar que es recién creado
             self.manager.current = "pantalla3"
         except Exception as e:
             print("❌ Error al crear el usuario:", e)

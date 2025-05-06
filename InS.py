@@ -15,12 +15,21 @@ class InSp(Screen):
 
         conn = crear_conexion()
         cur = conn.cursor()
-        cur.execute("SELECT Contrasena FROM usuarios WHERE NombreUsuario = ?", (nombre,))
-        row = cur.fetchone()
-        conn.close()
-        print(contrasena)
-        if row and contrasena == row[0]:
+        cur.execute("""
+    SELECT u.NombreUsuario, r.Rol 
+    FROM usuarios u
+    JOIN Usuario_Rol r ON u.Id = r.Usuario
+    WHERE u.NombreUsuario = ? AND u.Contrasena = ?
+""", (nombre, contrasena))
+
+        resultado = cur.fetchone()
+
+        if resultado:
+            App.get_running_app().usuario_actual = resultado[0]
+            App.get_running_app().rol_actual = resultado[1]
+            App.get_running_app().es_nuevo = False
             self.manager.current = "pantalla3"
+
         else:
             self.mostrar_error("Usuario o contraseña incorrecta")
 

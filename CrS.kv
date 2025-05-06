@@ -9,30 +9,57 @@
             font_size: 28
             size_hint_y: None
             height: 50
+            pos_hint: {"center_x": 0.5, "top": 0.95}
             halign: 'center'
             valign: 'middle'
             text_size: self.size
+        Widget:
+            size_hint_y: None
+            height: 100
 
         BoxLayout:
             orientation: 'vertical'
             size_hint_y: None
             height: 120
             spacing: 10
-
+        
             TextInput:
-                hint_text: "Escribe tu nombre aquí"
+                id: nombreusuario_input
+                hint_text: "Escribe tu nombre de usuario aquí"
                 font_size: 18
                 size_hint_y: None
                 height: 40
 
             TextInput:
-                hint_text: "Escribe tu correo aquí"
-                password: True
+                id: nombre_input
+                hint_text: "Escribe tu nombre aquí"
                 font_size: 18
                 size_hint_y: None
                 height: 40
             
             TextInput:
+                id: apellidos_input
+                hint_text: "Escribe tus apellidos aquí"
+                font_size: 18
+                size_hint_y: None
+                height: 40
+
+            TextInput:
+                id: peso_input
+                hint_text: "Escribe tu peso inicial aquí"
+                font_size: 18
+                size_hint_y: None
+                height: 40
+            
+            TextInput:
+                id: correo_input
+                hint_text: "Escribe tu correo aquí"
+                font_size: 18
+                size_hint_y: None
+                height: 40
+
+            TextInput:
+                id: contrasena_input
                 hint_text: "Escribe tu contraseña aquí"
                 password: True
                 font_size: 18
@@ -52,7 +79,7 @@
                 size_hint: (1, None)
                 height: 40
                 on_release:
-                    app.root.current = 'pantalla3'
+                    root.crear_usuario()
 
         Label:
             text: "[ref=registro]¿Ya tienes tu cuenta? Inicia Sesión Aquí[/ref]"

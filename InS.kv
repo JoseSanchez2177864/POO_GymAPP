@@ -1,4 +1,6 @@
 <InSp>:
+    name: "inicio"
+
     BoxLayout:
         orientation: 'vertical'
         padding: 40
@@ -20,12 +22,14 @@
             spacing: 10
 
             TextInput:
+                id: nombre_input
                 hint_text: "Escribe tu nombre aquí"
                 font_size: 18
                 size_hint_y: None
                 height: 40
 
             TextInput:
+                id: contrasena_input
                 hint_text: "Contraseña"
                 password: True
                 font_size: 18
@@ -45,7 +49,7 @@
                 size_hint: (1, None)
                 height: 40
                 on_release:
-                    app.root.current = 'pantalla3'
+                    root.verificar_credenciales()
 
         Label:
             text: "[ref=registro]¿No tienes cuenta? Regístrate aquí[/ref]"
@@ -59,3 +63,4 @@
             text_size: self.size
             on_ref_press:
                 app.root.current = 'pantalla2'
+

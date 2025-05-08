@@ -1,0 +1,42 @@
+<CRUDup>:
+    FloatLayout:
+        Label:
+            text: "CRUD de Usuarios"
+            font_size: 24
+            pos_hint: {"center_y": 0.822}  # Se eleva hacia arriba
+            padding: 10
+            spacing: 10
+
+        ScrollView:
+            size_hint: 1, 0.8
+            pos_hint: {"top": 1}
+            do_scroll_x: False
+            do_scroll_y: True
+
+            BoxLayout:
+                id: label_container
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height  # Mantén la altura dinámica
+                spacing: 10
+                padding: 10
+
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: 0.2
+            pos_hint: {"x": 0, "y": 0}
+
+            TextInput:
+                id: name_input
+                hint_text: "Nombre"
+                multiline: False
+
+            TextInput:
+                id: age_input
+                hint_text: "Edad"
+                input_filter: 'int'
+                multiline: False
+
+            Button:
+                text: "Cargar Usuarios"
+                on_press: root.load_users()

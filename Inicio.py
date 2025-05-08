@@ -3,7 +3,9 @@ from kivy.app import App
 from kivy.uix.screenmanager import Screen
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
+from kivy.core.text import LabelBase
 from kivy.lang import Builder
+import os
 
 # Cargamos el KV
 Builder.load_file("Inicio.kv")

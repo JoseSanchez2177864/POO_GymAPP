@@ -4,7 +4,6 @@
         padding: 10
         spacing: 10
 
-        # Barra superior
         BoxLayout:
             size_hint_y: None
             height: 60
@@ -14,18 +13,20 @@
             Button:
                 text: '≡'  # Menú
                 size_hint_x: 0.1
+                font_name: 'data/fonts/DejaVuSans.ttf'  # Fuente predeterminada de Kivy
 
-            Widget:  # Espaciador
+            Widget:
 
             Button:
                 text: '👤'
                 size_hint_x: 0.1
+                font_name: 'data/fonts/DejaVuSans.ttf'
 
             Button:
-                text: '⚙'  # Configuración
+                text: '⚙'
                 size_hint_x: 0.1
+                font_name: 'data/fonts/DejaVuSans.ttf'
 
-        # Último entrenamiento
         BoxLayout:
             orientation: 'vertical'
             size_hint_y: None
@@ -45,6 +46,7 @@
                 font_size: 20
                 halign: 'left'
                 text_size: self.size
+                font_name: 'data/fonts/DejaVuSans.ttf'
 
             Label:
                 text: "Press de banca\n45 min\n350 cal"
@@ -52,14 +54,15 @@
                 halign: 'left'
                 valign: 'top'
                 text_size: self.size
+                font_name: 'data/fonts/DejaVuSans.ttf'
 
-        # Progreso
         Label:
             text: "[b]PROGRESO[/b]"
             markup: True
             font_size: 18
             size_hint_y: None
             height: 30
+            font_name: 'data/fonts/DejaVuSans.ttf'
 
         BoxLayout:
             orientation: 'vertical'
@@ -76,14 +79,15 @@
                 text: "[i]Aquí iría el gráfico[/i]"
                 font_size: 16
                 color: 0.4, 0.4, 0.4, 1
+                font_name: 'data/fonts/DejaVuSans.ttf'
 
         Button:
             text: "INICIO RÁPIDO"
             size_hint_y: None
             height: 50
             font_size: 18
+            font_name: 'data/fonts/DejaVuSans.ttf'
 
-        # Navegación inferior
         BoxLayout:
             size_hint_y: None
             height: 60
@@ -91,9 +95,20 @@
 
             Button:
                 text: "🏠"
+                font_name: 'data/fonts/DejaVuSans.ttf'
             Button:
                 text: "➕"
+                font_name: 'data/fonts/DejaVuSans.ttf'
             Button:
                 text: "📊"
+                font_name: 'data/fonts/DejaVuSans.ttf'
+                on_release:
+                    app.root.current = 'pantalla7'
             Button:
                 text: "👤"
+                font_name: 'data/fonts/DejaVuSans.ttf'
+                on_release:
+                    app.root.current = 'pantalla5'
+
+
+

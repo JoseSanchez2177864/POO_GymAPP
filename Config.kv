@@ -1,0 +1,65 @@
+<Configp>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 10
+        spacing: 10
+
+        # Encabezado
+        BoxLayout:
+            size_hint_y: None
+            height: 60
+            canvas.before:
+                Color:
+                    rgba: 0.9, 0.9, 0.9, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            Label:
+                text: "[b]CONFIGURACIÓN DE USUARIO[/b]"
+                markup: True
+                font_size: 24
+
+        # Información del usuario
+        BoxLayout:
+            orientation: 'vertical'
+            padding: 10
+            spacing: 10
+
+            Label:
+                text: "Nombre: [b]Usuario[/b]"
+                markup: True
+                font_size: 18
+
+            Label:
+                text: "Correo: [b]usuario@ejemplo.com[/b]"
+                markup: True
+                font_size: 18
+
+        # Opciones de configuración
+        BoxLayout:
+            orientation: 'vertical'
+            padding: 10
+            spacing: 10
+
+            Button:
+                text: "Cambiar contraseña"
+                size_hint_y: None
+                height: 50
+                font_size: 18
+
+            Button:
+                text: "Actualizar información"
+                size_hint_y: None
+                height: 50
+                font_size: 18
+
+            Button:
+                text: "Cerrar sesión"
+                size_hint_y: None
+                height: 50
+                font_size: 18
+                background_color: 0.8, 0.1, 0.1, 1
+                color: 1, 1, 1, 1
+                on_release:
+                    app.root.current = 'pantalla1'

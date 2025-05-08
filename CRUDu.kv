@@ -22,21 +22,23 @@
                 padding: 10
 
         BoxLayout:
-            orientation: 'vertical'
-            size_hint_y: 0.2
-            pos_hint: {"x": 0, "y": 0}
-
-            TextInput:
-                id: name_input
-                hint_text: "Nombre"
-                multiline: False
-
-            TextInput:
-                id: age_input
-                hint_text: "Edad"
-                input_filter: 'int'
-                multiline: False
+            size_hint_y: None
+            height: 60
+            spacing: 10
 
             Button:
-                text: "Cargar Usuarios"
-                on_press: root.load_users()
+                text: "🏠"    
+                on_release:
+                    app.root.current = 'pantalla3'
+            Button:
+                text: "➕"
+            Button:
+                text: "📊"
+                on_release:
+                    app.root.current = 'pantalla7'
+            Button:
+                text: "👤"
+                on_release:
+                    app.root.current = 'pantalla5'
+        
+        

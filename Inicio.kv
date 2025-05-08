@@ -26,6 +26,8 @@
                 text: '⚙'
                 size_hint_x: 0.1
                 font_name: 'data/fonts/DejaVuSans.ttf'
+                on_release:
+                    app.root.current = 'pantalla5'
 
         BoxLayout:
             orientation: 'vertical'
@@ -95,18 +97,18 @@
 
             Button:
                 text: "🏠"
-                font_name: 'data/fonts/DejaVuSans.ttf'
+                on_release:
+                    app.root.current = 'pantalla3'
             Button:
                 text: "➕"
-                font_name: 'data/fonts/DejaVuSans.ttf'
             Button:
                 text: "📊"
-                font_name: 'data/fonts/DejaVuSans.ttf'
                 on_release:
                     app.root.current = 'pantalla7'
+                opacity: 1 if root.rol == 1 else 0
+                disabled: root.rol != 1
             Button:
                 text: "👤"
-                font_name: 'data/fonts/DejaVuSans.ttf'
                 on_release:
                     app.root.current = 'pantalla5'
 

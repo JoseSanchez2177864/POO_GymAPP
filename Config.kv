@@ -27,12 +27,17 @@
             spacing: 10
 
             Label:
-                text: "Nombre: [b]Usuario[/b]"
+                text: "Nombre: [b]{} {}[/b]".format(root.nombre, root.apellidos)
                 markup: True
                 font_size: 18
 
             Label:
-                text: "Correo: [b]usuario@ejemplo.com[/b]"
+                text: "Nombre de Usuario: [b]{}[/b]".format(root.nombreusuario)
+                markup: True
+                font_size: 18
+            
+            Label:
+                text: "Correo: [b]{}[/b]".format(root.correo)
                 markup: True
                 font_size: 18
 
@@ -47,12 +52,14 @@
                 size_hint_y: None
                 height: 50
                 font_size: 18
+                on_release: root.mostrar_popup_contrasena()
 
             Button:
                 text: "Actualizar información"
                 size_hint_y: None
                 height: 50
                 font_size: 18
+                on_release: root.mostrar_popup_info()
 
             Button:
                 text: "Cerrar sesión"
@@ -63,3 +70,24 @@
                 color: 1, 1, 1, 1
                 on_release:
                     app.root.current = 'pantalla1'
+        BoxLayout:
+            size_hint_y: None
+            height: 60
+            spacing: 10
+
+            Button:
+                text: "🏠"
+                on_release:
+                    app.root.current = 'pantalla3'
+            Button:
+                text: "➕"
+            Button:
+                text: "📊"
+                on_release:
+                    app.root.current = 'pantalla7'
+                opacity: 1 if root.rol == 1 else 0
+                disabled: root.rol != 1
+            Button:
+                text: "👤"
+                on_release:
+                    app.root.current = 'pantalla5'

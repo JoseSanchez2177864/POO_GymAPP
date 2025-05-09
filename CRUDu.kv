@@ -1,0 +1,44 @@
+<CRUDup>:
+    FloatLayout:
+        Label:
+            text: "CRUD de Usuarios"
+            font_size: 24
+            pos_hint: {"center_y": 0.822}  # Se eleva hacia arriba
+            padding: 10
+            spacing: 10
+
+        ScrollView:
+            size_hint: 1, 0.8
+            pos_hint: {"top": 1}
+            do_scroll_x: False
+            do_scroll_y: True
+
+            BoxLayout:
+                id: label_container
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height  # Mantén la altura dinámica
+                spacing: 10
+                padding: 10
+
+        BoxLayout:
+            size_hint_y: None
+            height: 60
+            spacing: 10
+
+            Button:
+                text: "🏠"    
+                on_release:
+                    app.root.current = 'pantalla3'
+            Button:
+                text: "➕"
+            Button:
+                text: "📊"
+                on_release:
+                    app.root.current = 'pantalla7'
+            Button:
+                text: "👤"
+                on_release:
+                    app.root.current = 'pantalla5'
+        
+        

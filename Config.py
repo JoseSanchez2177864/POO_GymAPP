@@ -63,8 +63,8 @@ class Configp(Screen):
         try:
             cursor.execute("""
                 UPDATE Usuarios
-                SET Nombre = ?, Apellidos = ?, NombreUsuario = ?, Correo = ?
-                WHERE NombreUsuario = ?
+                SET Nombre = ?, Apellidos = ?, Nombre_Usuario = ?, Correo = ?
+                WHERE Nombre_Usuario = ?
             """, (nuevo_nombre, nuevo_apellidos, nuevo_usuario, nuevo_correo, usuario_actual))
             conn.commit()            
             self.nombre = nuevo_nombre
@@ -115,11 +115,11 @@ class Configp(Screen):
         app = App.get_running_app()
         usuario = app.usuario_actual
 
-        cursor.execute("SELECT Contrasena FROM Usuarios WHERE NombreUsuario = ?", (usuario,))
+        cursor.execute("SELECT Contraseña FROM Usuarios WHERE Nombre_Usuario = ?", (usuario,))
         actual = cursor.fetchone()
 
         if actual and actual[0] == old_pass:
-            cursor.execute("UPDATE Usuarios SET Contrasena = ? WHERE NombreUsuario = ?", (new_pass, usuario))
+            cursor.execute("UPDATE Usuarios SET Contraseña = ? WHERE Nombre_Usuario = ?", (new_pass, usuario))
             conn.commit()
             conn.close()
             self.popup.dismiss()
@@ -138,7 +138,7 @@ class Configp(Screen):
         usuario = app.usuario_actual
         # Asegúrate de que los nombres de columnas sean correctos y no tengan espacios
         cursor.execute(
-        "SELECT Nombre, Apellidos, NombreUsuario, Correo FROM Usuarios WHERE NombreUsuario = ?",
+        "SELECT Nombre, Apellidos, Nombre_Usuario, Correo FROM Usuarios WHERE Nombre_Usuario = ?",
         (usuario,)
     )
         dato = cursor.fetchone()

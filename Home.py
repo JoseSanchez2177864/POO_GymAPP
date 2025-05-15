@@ -33,6 +33,11 @@ class GymApp(App):
             self.root.current = 'pantalla8'  # Pantalla para administradores
         elif self.rol_actual == 2:
             self.root.current = 'pantalla9'
+    def redirigir_por_rol2(self):
+        if self.rol_actual == 1:
+            self.root.current = 'pantalla10'  # Pantalla para administradores
+        elif self.rol_actual == 2:
+            self.root.current = 'pantalla6'
 
 if __name__ == '__main__':
     GymApp().run()

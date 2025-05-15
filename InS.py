@@ -16,10 +16,10 @@ class InSp(Screen):
         conn = crear_conexion()
         cur = conn.cursor()
         cur.execute("""
-    SELECT u.NombreUsuario, r.Rol 
+    SELECT u.Nombre_Usuario, r.Rol 
     FROM usuarios u
     JOIN Usuario_Rol r ON u.Id = r.Usuario
-    WHERE u.NombreUsuario = ? AND u.Contrasena = ?
+    WHERE u.Nombre_Usuario = ? AND u.Contraseña = ?
 """, (nombre, contrasena))
 
         resultado = cur.fetchone()

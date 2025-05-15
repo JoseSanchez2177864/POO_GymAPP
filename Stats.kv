@@ -1,0 +1,58 @@
+<Statsp>:
+    FloatLayout:
+        BoxLayout:
+            orientation: 'vertical'
+            padding: 20
+            spacing: 10
+
+            Label:
+                text: 'Estadísticas del Usuario'
+                font_size: '24sp'
+                bold: True
+                size_hint_y: None
+                height: 40
+
+            BoxLayout:
+                orientation: 'horizontal'
+                spacing: 20
+
+                Label:
+                    text: 'Entrenamientos Completados:'
+                    font_size: '18sp'
+
+                Label:
+                    id: lbl_entrenamientos
+                    text: '0'
+                    font_size: '18sp'
+
+            BoxLayout:
+                orientation: 'horizontal'
+                spacing: 20
+
+                Label:
+                    text: 'Tiempo Total de Entrenamiento:'
+                    font_size: '18sp'
+
+                Label:
+                    id: lbl_tiempo
+                    text: '0 hrs'
+                    font_size: '18sp'
+
+            BoxLayout:
+                orientation: 'horizontal'
+                spacing: 20
+
+                Label:
+                    text: 'Promedio de Calorías Quemadas:'
+                    font_size: '18sp'
+
+                Label:
+                    id: lbl_calorias
+                    text: '0 kcal'
+                    font_size: '18sp'
+
+            Button:
+                text: 'Actualizar Estadísticas'
+                size_hint_y: None
+                height: 40
+                on_press: root.actualizar_estadisticas()

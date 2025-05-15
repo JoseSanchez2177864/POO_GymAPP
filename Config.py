@@ -155,3 +155,9 @@ class Configp(Screen):
             self.apellidos = ""
             self.nombreusuario = ""
             self.correo = ""
+
+    def redirigir_por_rol(self):
+        if self.rol == 1:
+            self.manager.current = 'pantalla8'  # Pantalla para administradores
+        elif self.rol == 2:
+            self.manager.current = 'pantalla9'  # Pantalla para usuarios normales

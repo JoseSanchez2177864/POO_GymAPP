@@ -46,3 +46,4 @@ class Iniciop(Screen):
         app.bienvenida_mostrada = False  # Restablecemos para la próxima sesión
         app.usuario_actual = None
         app.root.current = 'pantalla1'  # Cambia al nombre de tu pantalla de login
+    

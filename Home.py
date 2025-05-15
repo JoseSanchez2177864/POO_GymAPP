@@ -10,6 +10,7 @@ from Config import Configp
 from Stats import Statsp
 from CRUDu import CRUDup
 from CRUDp import CRUDpp
+from Planes import Planesp
 
 class GymApp(App):
     def build(self):
@@ -24,8 +25,14 @@ class GymApp(App):
         sm.add_widget(Statsp(name='pantalla6'))
         sm.add_widget(CRUDup(name='pantalla7'))
         sm.add_widget(CRUDpp(name='pantalla8'))
+        sm.add_widget(Planesp(name='pantalla9'))
         sm.current = 'pantalla1'
         return sm
+    def redirigir_por_rol(self):
+        if self.rol_actual == 1:
+            self.root.current = 'pantalla8'  # Pantalla para administradores
+        elif self.rol_actual == 2:
+            self.root.current = 'pantalla9'
 
 if __name__ == '__main__':
     GymApp().run()

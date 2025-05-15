@@ -82,9 +82,7 @@
             Button:
                 text: "➕"
                 on_release:
-                    app.root.current = 'pantalla8'
-                opacity: 1 if root.rol == 1 else 0
-                disabled: root.rol != 1
+                    root.redirigir_por_rol()
             Button:
                 text: "📊"
                 on_release:

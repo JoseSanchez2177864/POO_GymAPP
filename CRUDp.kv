@@ -1,4 +1,4 @@
-<CRUDup>:
+<CRUDpp>:
     FloatLayout:
         Label:
             text: "CRUD de Usuarios"
@@ -25,6 +25,7 @@
             size_hint_y: None
             height: 60
             spacing: 10
+            pos_hint: {"center_x": 0.5, "y": 0.05}
 
             Button:
                 text: "🏠"    
@@ -42,5 +43,10 @@
                 text: "👤"
                 on_release:
                     app.root.current = 'pantalla5'
-        
-        
+
+        Button:
+            text: "Agregar Planes"
+            size_hint: None, None
+            size: 150, 50
+            pos_hint: {"right": 0.98, "top": 0.25}  # Más arriba (ajusta el valor)
+            on_release: root.mostrar_popup_agregar()

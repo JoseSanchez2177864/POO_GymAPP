@@ -9,6 +9,7 @@ from Entr import Entrp
 from Config import Configp
 from Stats import Statsp
 from CRUDu import CRUDup
+from CRUDp import CRUDpp
 
 class GymApp(App):
     def build(self):
@@ -22,6 +23,7 @@ class GymApp(App):
         sm.add_widget(Configp(name='pantalla5'))
         sm.add_widget(Statsp(name='pantalla6'))
         sm.add_widget(CRUDup(name='pantalla7'))
+        sm.add_widget(CRUDpp(name='pantalla8'))
         sm.current = 'pantalla1'
         return sm
 

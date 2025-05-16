@@ -1,96 +1,151 @@
 <CrSp>:
-    BoxLayout:
-        orientation: 'vertical'
-        padding: 40
-        spacing: 40
+    name: "inicio"
+    MDScreen:
+        md_bg_color: 0.05, 0.05, 0.05, 1
 
-        Label:
-            text: "Bienvenido al Gym App"
-            font_size: 28
-            size_hint_y: None
-            height: 50
-            pos_hint: {"center_x": 0.5, "top": 0.95}
-            halign: 'center'
-            valign: 'middle'
-            text_size: self.size
-        Widget:
-            size_hint_y: None
-            height: 100
-
-        BoxLayout:
+        MDBoxLayout:
             orientation: 'vertical'
-            size_hint_y: None
-            height: 120
-            spacing: 10
-        
-            TextInput:
-                id: nombreusuario_input
-                hint_text: "Escribe tu nombre de usuario aquí"
-                font_size: 18
+            spacing: dp(10)
+            padding: dp(20), dp(20)
+            size_hint: None, None
+            size: dp(360), dp(640)
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
+            # Logo
+            FitImage:
+                source: "66067803-305d-4968-91c1-ea1c117d6dc6.png"
                 size_hint_y: None
-                height: 40
+                height: dp(120)
+                allow_stretch: True
+                keep_ratio: True
 
-            TextInput:
-                id: nombre_input
-                hint_text: "Escribe tu nombre aquí"
-                font_size: 18
-                size_hint_y: None
-                height: 40
-            
-            TextInput:
-                id: apellidos_input
-                hint_text: "Escribe tus apellidos aquí"
-                font_size: 18
-                size_hint_y: None
-                height: 40
+            # Títulos
+            MDLabel:
+                text: "ROAD TO FIT"
+                font_style: "H4"
+                halign: "center"
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                bold: True
 
-            TextInput:
-                id: peso_input
-                hint_text: "Escribe tu peso inicial aquí"
-                font_size: 18
-                size_hint_y: None
-                height: 40
-            
-            TextInput:
-                id: correo_input
-                hint_text: "Escribe tu correo aquí"
-                font_size: 18
-                size_hint_y: None
-                height: 40
+            MDLabel:
+                text: "CREA TU CUENTA"
+                font_style: "H5"
+                halign: "center"
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                bold: True
 
-            TextInput:
-                id: contrasena_input
-                hint_text: "Escribe tu contraseña aquí"
-                password: True
-                font_size: 18
-                size_hint_y: None
-                height: 40
+            ScrollView:
+                do_scroll_x: False
+                size_hint_y: 20
 
-        BoxLayout:
-            orientation: 'horizontal'
-            size_hint_y: None
-            height: 50
-            spacing: 10
-            padding: [50, 0]
+                MDBoxLayout:
+                    orientation: 'vertical'
+                    spacing: dp(15)
+                    padding: 0
+                    size_hint_y: None
+                    height: self.minimum_height
 
-            Button:
-                text: 'Crear cuenta'
-                font_size: 18
-                size_hint: (1, None)
-                height: 40
-                on_release:
-                    root.crear_usuario()
+                    MDTextField:
+                        id: nombre_input
+                        hint_text: "Nombre"
+                        icon_left: "account"
+                        mode: "fill"
+                        fill_color: (0.1, 0.1, 0.1, 1)
+                        radius: [10, 10, 10, 10]
+                        size_hint_x: 0.9
+                        height: dp(60)
+                        pos_hint: {"center_x": 0.5}
 
-        Label:
-            text: "[ref=registro]¿Ya tienes tu cuenta? Inicia Sesión Aquí[/ref]"
-            markup: True
-            color: 0, 0, 1, 1
-            font_size: 16
-            size_hint_y: None
-            height: 30
-            halign: 'center'
-            valign: 'middle'
-            text_size: self.size
-            on_ref_press:
-                app.root.current = 'pantalla1'
+                    MDTextField:
+                        id: apellidos_input
+                        hint_text: "Apellidos"
+                        icon_left: "account"
+                        mode: "fill"
+                        fill_color: (0.1, 0.1, 0.1, 1)
+                        radius: [10, 10, 10, 10]
+                        size_hint_x: 0.9
+                        height: dp(60)
+                        pos_hint: {"center_x": 0.5}
 
+                    MDTextField:
+                        id: nombreusuario_input
+                        hint_text: "Nombre de Usuario"
+                        icon_left: "account"
+                        mode: "fill"
+                        fill_color: (0.1, 0.1, 0.1, 1)
+                        radius: [10, 10, 10, 10]
+                        size_hint_x: 0.9
+                        height: dp(60)
+                        pos_hint: {"center_x": 0.5}
+
+                    Widget:
+                        size_hint_y: None
+                        height: dp(40)  # Más espacio entre nombre de usuario y edad/peso
+
+                    MDBoxLayout:
+                        orientation: 'horizontal'
+                        spacing: dp(15)
+                        size_hint_x: 0.9
+                        pos_hint: {"center_x": 0.5}
+                        height: dp(60)
+
+                        MDTextField:
+                            id: edad_input
+                            hint_text: "Edad"
+                            icon_left: "calendar"
+                            mode: "fill"
+                            fill_color: (0.1, 0.1, 0.1, 1)
+                            radius: [10, 10, 10, 10]
+                            size_hint_x: None
+                            width: dp(160)  # Más ancho para edad
+                            height: dp(60)
+
+                        MDTextField:
+                            id: peso_input
+                            hint_text: "Peso"
+                            icon_left: "dumbbell"
+                            mode: "fill"
+                            fill_color: (0.1, 0.1, 0.1, 1)
+                            radius: [10, 10, 10, 10]
+                            size_hint_x: None
+                            width: dp(115)  # Más pequeño para peso
+                            height: dp(60)
+
+                    MDTextField:
+                        id: correo_input
+                        hint_text: "Correo"
+                        icon_left: "email-outline"
+                        mode: "fill"
+                        fill_color: (0.1, 0.1, 0.1, 1)
+                        radius: [10, 10, 10, 10]
+                        size_hint_x: 0.9
+                        height: dp(60)
+                        pos_hint: {"center_x": 0.5}
+
+                    MDTextField:
+                        id: contrasena_input
+                        hint_text: "Contraseña"
+                        icon_left: "lock-outline"
+                        password: True
+                        mode: "fill"
+                        fill_color: (0.1, 0.1, 0.1, 1)
+                        radius: [10, 10, 10, 10]
+                        size_hint_x: 0.9
+                        height: dp(60)
+                        pos_hint: {"center_x": 0.5}
+
+            MDRaisedButton:
+                text: "LOGIN"
+                md_bg_color: 0.8, 0.1, 0.1, 1
+                size_hint_x: 0.9
+                pos_hint: {"center_x": 0.5}
+
+            MDLabel:
+                text: "¿Ya tienes tu cuenta? [ref=signup][color=CC1A1A]Inicia Sesión Aquí[/color][/ref]"
+                halign: "center"
+                markup: True
+                theme_text_color: "Hint"
+                on_ref_press:
+                    app.root.current = 'pantalla1'

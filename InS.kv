@@ -1,66 +1,85 @@
 <InSp>:
     name: "inicio"
+    MDScreen:
+        md_bg_color: 0.05, 0.05, 0.05, 1
 
-    BoxLayout:
-        orientation: 'vertical'
-        padding: 40
-        spacing: 20
-
-        Label:
-            text: "Bienvenido al Gym App"
-            font_size: 28
-            size_hint_y: None
-            height: 50
-            halign: 'center'
-            valign: 'middle'
-            text_size: self.size
-
-        BoxLayout:
+        MDBoxLayout:
             orientation: 'vertical'
-            size_hint_y: None
-            height: 120
-            spacing: 10
+            spacing: dp(15)
+            padding: dp(20), dp(40)
+            size_hint: None, None
+            size: dp(360), dp(640)
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
 
-            TextInput:
-                id: nombre_input
-                hint_text: "Escribe tu nombre aquí"
-                font_size: 18
+            FitImage:
+                source: "66067803-305d-4968-91c1-ea1c117d6dc6.png"
                 size_hint_y: None
-                height: 40
+                height: dp(150)
+                allow_stretch: True
+                keep_ratio: True
 
-            TextInput:
+            MDLabel:
+                text: "ROAD TO FIT"
+                font_style: "H4"
+                halign: "center"
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                font_size: "25sp"
+                bold: True
+
+            MDLabel:
+                text: "EMPECEMOS TU VIDA FIT"
+                font_style: "H2"
+                halign: "center"
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                font_size: "25sp"
+                bold: True
+
+            MDTextField:
+                id: nombre_input
+                hint_text: "Nombre de Usuario"
+                icon_left: "account"
+                mode: "fill"
+                fill_color: (0.1, 0.1, 0.1, 1)
+                radius: [10, 10, 10, 10]
+                size_hint_x: 0.9
+                pos_hint: {"center_x": 0.5}
+                color_mode: "custom"
+                line_color_focus: 1, 0, 0, 1            # línea roja
+                text_color_focus: 0.8, 0.1, 0.1, 1           # texto rojo
+                icon_left_color_focus: 1, 0, 0, 1       # ícono rojo
+                hint_text_color_focus: 0.8, 0.1, 0.1, 1 
+
+            MDTextField:
                 id: contrasena_input
                 hint_text: "Contraseña"
+                icon_left: "lock-outline"
                 password: True
-                font_size: 18
-                size_hint_y: None
-                height: 40
+                mode: "fill"
+                fill_color: (0.1, 0.1, 0.1, 1)
+                size_hint_x: 0.9
+                pos_hint: {"center_x": 0.5}
+                radius: [10, 10, 10, 10]
+                color_mode: "custom"
+                line_color_focus: 1, 0, 0, 1            # línea roja
+                text_color_focus: 0.8, 0.1, 0.1, 1          # texto rojo
+                icon_left_color_focus: 1, 0, 0, 1       # ícono rojo
+                hint_text_color_focus: 0.8, 0.1, 0.1, 1 
 
-        BoxLayout:
-            orientation: 'horizontal'
-            size_hint_y: None
-            height: 50
-            spacing: 10
-            padding: [50, 0]
-
-            Button:
-                text: 'Iniciar Sesión'
-                font_size: 18
-                size_hint: (1, None)
-                height: 40
+            MDRaisedButton:
+                text: "LOGIN"
+                md_bg_color: 0.8, 0.1, 0.1, 1
+                size_hint_x: 0.9
+                pos_hint: {"center_x": 0.5}
                 on_release:
                     root.verificar_credenciales()
 
-        Label:
-            text: "[ref=registro]¿No tienes cuenta? Regístrate aquí[/ref]"
-            markup: True
-            color: 0, 0, 1, 1
-            font_size: 16
-            size_hint_y: None
-            height: 30
-            halign: 'center'
-            valign: 'middle'
-            text_size: self.size
-            on_ref_press:
-                app.root.current = 'pantalla2'
+            MDLabel:
+                text: "Don't have an account? [ref=signup][color=CC1A1A]Sign Up[/color][/ref]"
+                halign: "center"
+                markup: True
+                theme_text_color: "Hint"
+                on_ref_press:
+                    app.root.current = 'pantalla2'
 

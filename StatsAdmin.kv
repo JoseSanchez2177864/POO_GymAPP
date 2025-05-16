@@ -1,0 +1,20 @@
+<StatsAdminp>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 10
+        spacing: 10
+
+        Label:
+            text: "Progreso de RM"
+            font_size: 24
+
+        Image:
+            id: imagen_musculos
+            source: 'musculos_base.png'  # Imagen base de músculos
+            size_hint_y: 0.5
+
+        BoxLayout:
+            size_hint_y: 0.5
+            Image:
+                id: grafica_rm
+                source: 'grafica_rm.png'

@@ -1,17 +1,18 @@
 from kivy.app import App
 from kivy.uix.screenmanager import Screen
-from kivy.lang import Builder
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from ConBD import crear_conexion
 
-Builder.load_file("CrS.kv")
-
 class CrSp(Screen):
     def mostrar_mensaje(self, titulo, mensaje):
-        popup = Popup(title=titulo,
-                      content=Label(text=mensaje),
-                      size_hint=(None, None), size=(400, 200))
+        popup = Popup(
+            title=titulo,
+            content=Label(text=mensaje),
+            size_hint=(None, None), 
+            size=(400, 200),
+            auto_dismiss=True
+        )
         popup.open()
 
     def crear_usuario(self):
@@ -22,6 +23,11 @@ class CrSp(Screen):
         contrasena = self.ids.contrasena_input.text.strip()
         plan_por_defecto = 1
         rol_por_defecto = 2
+
+        # Validación de campos vacíos
+        if not nombre_usuario or not nombre or not apellidos or not correo or not contrasena:
+            self.mostrar_mensaje("Campos Vacíos", "Por favor, completa todos los campos obligatorios.")
+            return
 
         try:
             peso = float(self.ids.peso_input.text)
@@ -62,6 +68,7 @@ class CrSp(Screen):
             conn.commit()
             print(f"✅ Usuario (ID: {usuario_id}) y rol registrados correctamente.")
 
+            # Guardar el usuario creado en la app para sesión
             App.get_running_app().usuario_actual = nombre_usuario
             App.get_running_app().es_nuevo = True
             self.manager.current = "pantalla3"

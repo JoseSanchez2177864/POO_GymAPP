@@ -1,7 +1,9 @@
 # app.py
-from kivy.app import App
+from kivymd.app import MDApp
 from kivy.uix.screenmanager import ScreenManager
 from kivy.lang import Builder
+from kivy.core.window import Window
+Window.size = (360, 640)  # Tamaño típico de un móvil
 from InS import InSp
 from CrS import CrSp
 from Inicio import Iniciop
@@ -11,9 +13,14 @@ from Stats import Statsp
 from CRUDu import CRUDup
 from CRUDp import CRUDpp
 from Planes import Planesp
+from StatsAdmin import StatsAdminp
 
-class GymApp(App):
+class GymApp(MDApp):
     def build(self):
+        self.theme_cls.primary_palette = "Red"
+        self.theme_cls.theme_style = "Dark"
+
+        # Cargar archivos .kv después de inicializar la app
         Builder.load_file("InS.kv")
         Builder.load_file("CrS.kv")
         sm = ScreenManager()
@@ -26,8 +33,10 @@ class GymApp(App):
         sm.add_widget(CRUDup(name='pantalla7'))
         sm.add_widget(CRUDpp(name='pantalla8'))
         sm.add_widget(Planesp(name='pantalla9'))
+        sm.add_widget(StatsAdminp(name='pantalla10'))
         sm.current = 'pantalla1'
         return sm
+    
     def redirigir_por_rol(self):
         if self.rol_actual == 1:
             self.root.current = 'pantalla8'  # Pantalla para administradores
@@ -38,6 +47,7 @@ class GymApp(App):
             self.root.current = 'pantalla10'  # Pantalla para administradores
         elif self.rol_actual == 2:
             self.root.current = 'pantalla6'
+    
 
 if __name__ == '__main__':
     GymApp().run()

@@ -1,58 +1,44 @@
 <Statsp>:
-    FloatLayout:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 10
+        spacing: 10
+
+        Label:
+            text: "Progreso de RM"
+            font_size: 24
+
+        Image:
+            id: imagen_musculos
+            source: 'musculos_base.png'  # Imagen base de músculos
+            size_hint_y: 0.5
+
         BoxLayout:
-            orientation: 'vertical'
-            padding: 20
-            spacing: 10
-
-            Label:
-                text: 'Estadísticas del Usuario'
-                font_size: '24sp'
-                bold: True
-                size_hint_y: None
-                height: 40
-
-            BoxLayout:
-                orientation: 'horizontal'
-                spacing: 20
-
-                Label:
-                    text: 'Entrenamientos Completados:'
-                    font_size: '18sp'
-
-                Label:
-                    id: lbl_entrenamientos
-                    text: '0'
-                    font_size: '18sp'
-
-            BoxLayout:
-                orientation: 'horizontal'
-                spacing: 20
-
-                Label:
-                    text: 'Tiempo Total de Entrenamiento:'
-                    font_size: '18sp'
-
-                Label:
-                    id: lbl_tiempo
-                    text: '0 hrs'
-                    font_size: '18sp'
-
-            BoxLayout:
-                orientation: 'horizontal'
-                spacing: 20
-
-                Label:
-                    text: 'Promedio de Calorías Quemadas:'
-                    font_size: '18sp'
-
-                Label:
-                    id: lbl_calorias
-                    text: '0 kcal'
-                    font_size: '18sp'
-
-            Button:
-                text: 'Actualizar Estadísticas'
-                size_hint_y: None
-                height: 40
-                on_press: root.actualizar_estadisticas()
+            size_hint_y: 0.5
+            Image:
+                id: grafica_rm
+                source: 'grafica_rm.png'
+    BoxLayout:
+        size_hint_y: None
+        height: 60
+        spacing: 10
+        Button:
+            text: "🏠"
+            on_release:
+                app.root.current = 'pantalla3'
+        Button:
+            text: "➕"
+            on_release:app.redirigir_por_rol()
+        Button:
+            text: "STATS"
+            on_release:app.redirigir_por_rol2()
+        Button:
+            text: "📊"
+            on_release:
+                app.root.current = 'pantalla7'
+            opacity: 1 if root.rol == 1 else 0
+            disabled: root.rol != 1
+        Button:
+            text: "👤"
+            on_release:
+                app.root.current = 'pantalla5'

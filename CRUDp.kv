@@ -1,52 +1,101 @@
 <CRUDpp>:
     FloatLayout:
-        Label:
+        md_bg_color: 0.05, 0.05, 0.05, 1
+
+        MDLabel:
             text: "CRUD de Usuarios"
-            font_size: 24
-            pos_hint: {"center_y": 0.822}  # Se eleva hacia arriba
-            padding: 10
-            spacing: 10
+            font_size: "24sp"
+            halign: "center"
+            theme_text_color: "Custom"
+            text_color: 1, 1, 1, 1
+            bold: True
+            pos_hint: {"center_y": 0.95}
 
-        ScrollView:
-            size_hint: 1, 0.8
-            pos_hint: {"top": 1}
-            do_scroll_x: False
-            do_scroll_y: True
+        MDBoxLayout:
+            orientation: "vertical"
+            size_hint: 0.9, 0.75
+            pos_hint: {"center_x": 0.5, "center_y": 0.55}
+            spacing: dp(10)
+            padding: dp(10)
+            md_bg_color: 0.15, 0.15, 0.15, 1
+            radius: [15, 15, 15, 15]
 
-            BoxLayout:
-                id: label_container
-                orientation: 'vertical'
-                size_hint_y: None
-                height: self.minimum_height  # Mantén la altura dinámica
-                spacing: 10
-                padding: 10
+            ScrollView:
+                do_scroll_x: False
+                do_scroll_y: True
+                MDBoxLayout:
+                    id: label_container
+                    orientation: "vertical"
+                    size_hint_y: None
+                    height: self.minimum_height
+                    spacing: dp(10)
+                    padding: dp(10)
+                    md_bg_color: 0.1, 0.1, 0.1, 1
+                    radius: [10, 10, 10, 10]
 
-        BoxLayout:
+        MDSeparator:
+            height: dp(1)
+            md_bg_color: 0.4, 0.4, 0.4, 1
+            pos_hint: {"center_x": 0.5, "center_y": 0.15}
+
+        MDBoxLayout:
+            orientation: 'horizontal'
             size_hint_y: None
-            height: 60
-            spacing: 10
-            pos_hint: {"center_x": 0.5, "y": 0.05}
+            height: dp(50)
+            padding: dp(10), 0
+            spacing: dp(10)
+            pos_hint: {"center_x": 0.5, "y": 0.02}
 
-            Button:
-                text: "🏠"    
-                on_release:
-                    app.root.current = 'pantalla3'
-            Button:
-                text: "➕"
-                on_release:
-                    app.root.current = 'pantalla8'
-            Button:
-                text: "📊"
-                on_release:
-                    app.root.current = 'pantalla7'
-            Button:
-                text: "👤"
-                on_release:
-                    app.root.current = 'pantalla5'
+            MDIconButton:
+                icon: "home"
+                user_font_size: "24sp"
+                md_bg_color: 0.8, 0.1, 0.1, 1
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                on_release: app.root.current = 'pantalla3'
+                
+            MDIconButton:
+                icon: "clipboard-list"
+                user_font_size: "24sp"
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                md_bg_color: 0.8, 0.1, 0.1, 1
+                on_release: root.redirigir_por_rol()
 
-        Button:
+            Widget:
+                size_hint_x: 0.5
+
+            MDIconButton:
+                icon: "plus"
+                user_font_size: "24sp"
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                md_bg_color: 0.8, 0.1, 0.1, 1
+                on_release: root.agregar_usuario()
+
+            Widget:
+                size_hint_x: 0.5
+
+            MDIconButton:
+                icon: "chart-bar"
+                user_font_size: "24sp"
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                md_bg_color: 0.8, 0.1, 0.1, 1
+                on_release: app.root.current = 'pantalla6'
+
+            MDIconButton:
+                icon: "account"
+                user_font_size: "24sp"
+                md_bg_color: 0.8, 0.1, 0.1, 1
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                on_release: app.root.current = 'pantalla5'
+
+        MDRaisedButton:
             text: "Agregar Planes"
             size_hint: None, None
-            size: 150, 50
-            pos_hint: {"right": 0.98, "top": 0.25}  # Más arriba (ajusta el valor)
+            size: dp(150), dp(50)
+            pos_hint: {"right": 0.98, "top": 0.28}
+            md_bg_color: 0.2, 0.6, 0.2, 1
             on_release: root.mostrar_popup_agregar()

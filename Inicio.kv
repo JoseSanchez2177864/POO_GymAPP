@@ -1,120 +1,153 @@
 <Iniciop>:
-    BoxLayout:
-        orientation: 'vertical'
-        padding: 10
-        spacing: 10
+    FloatLayout:
+        md_bg_color: 0.05, 0.05, 0.05, 1
 
-        BoxLayout:
+        MDBoxLayout:
+            orientation: 'vertical'
+            size_hint: 0.95, 0.9
+            pos_hint: {"center_x": 0.5, "top": 0.97}
+            spacing: dp(10)
+            padding: dp(10)
+            md_bg_color: 0.15, 0.15, 0.15, 1
+            radius: [15, 15, 15, 15]
+
+            MDBoxLayout:
+                size_hint_y: None
+                height: dp(60)
+                padding: dp(10)
+                spacing: dp(10)
+
+                MDIconButton:
+                    icon: "menu"
+                    theme_text_color: "Custom"
+                    text_color: 1, 1, 1, 1
+                    user_font_size: "24sp"
+
+                Widget:
+
+                MDIconButton:
+                    icon: "account"
+                    theme_text_color: "Custom"
+                    text_color: 1, 1, 1, 1
+
+                MDIconButton:
+                    icon: "cog"
+                    theme_text_color: "Custom"
+                    text_color: 1, 1, 1, 1
+                    on_release: app.root.current = 'pantalla5'
+
+            MDBoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: dp(120)
+                padding: dp(10)
+                spacing: dp(5)
+                md_bg_color: 0.1, 0.1, 0.1, 1
+                radius: [10, 10, 10, 10]
+
+                MDLabel:
+                    text: "💪  [b]Último entrenamiento[/b]"
+                    markup: True
+                    font_size: "20sp"
+                    halign: "left"
+                    theme_text_color: "Custom"
+                    text_color: 1, 1, 1, 1
+
+                MDLabel:
+                    text: "Press de banca\n45 min\n350 cal"
+                    font_size: "16sp"
+                    halign: "left"
+                    theme_text_color: "Custom"
+                    text_color: 0.8, 0.8, 0.8, 1
+
+            MDLabel:
+                text: "[b]PROGRESO[/b]"
+                markup: True
+                font_size: "18sp"
+                size_hint_y: None
+                height: dp(30)
+                halign: "center"
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+
+            MDBoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: dp(160)
+                padding: dp(10)
+                md_bg_color: 0.1, 0.1, 0.1, 1
+                radius: [10, 10, 10, 10]
+
+                MDLabel:
+                    text: "[i]Aquí iría el gráfico[/i]"
+                    font_size: "16sp"
+                    halign: "center"
+                    theme_text_color: "Custom"
+                    text_color: 0.5, 0.5, 0.5, 1
+
+            MDRaisedButton:
+                text: "INICIO RÁPIDO"
+                size_hint_y: None
+                height: dp(50)
+                font_size: "18sp"
+                md_bg_color: 0.2, 0.6, 0.2, 1
+                text_color: 1, 1, 1, 1
+                pos_hint: {"center_x": 0.5}
+
+        MDSeparator:
+            height: dp(1)
+            md_bg_color: 0.4, 0.4, 0.4, 1
+            pos_hint: {"center_x": 0.5, "y": 0.12}
+
+        MDBoxLayout:
+            orientation: 'horizontal'
             size_hint_y: None
-            height: 60
-            padding: 10
-            spacing: 10
+            height: dp(50)
+            padding: dp(10), 0
+            spacing: dp(10)
+            pos_hint: {"center_x": 0.5, "y": 0.02}
 
-            Button:
-                text: '≡'  # Menú
-                size_hint_x: 0.1
-                font_name: 'data/fonts/DejaVuSans.ttf'  # Fuente predeterminada de Kivy
+            MDIconButton:
+                icon: "home"
+                user_font_size: "24sp"
+                md_bg_color: 0.8, 0.1, 0.1, 1
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                on_release: app.root.current = 'pantalla3'
+                
+            MDIconButton:
+                icon: "clipboard-list"
+                user_font_size: "24sp"
+                md_bg_color: 0.8, 0.1, 0.1, 1
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                on_release: app.redirigir_por_rol()
 
             Widget:
+                size_hint_x: 0.5
 
-            Button:
-                text: '👤'
-                size_hint_x: 0.1
-                font_name: 'data/fonts/DejaVuSans.ttf'
+            MDIconButton:
+                icon: "plus"
+                user_font_size: "24sp"
+                md_bg_color: 0.8, 0.1, 0.1, 1
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
 
-            Button:
-                text: '⚙'
-                size_hint_x: 0.1
-                font_name: 'data/fonts/DejaVuSans.ttf'
-                on_release:
-                    app.root.current = 'pantalla5'
+            Widget:
+                size_hint_x: 0.5
 
-        BoxLayout:
-            orientation: 'vertical'
-            size_hint_y: None
-            height: 120
-            padding: 10
-            spacing: 5
-            canvas.before:
-                Color:
-                    rgba: 0.9, 0.9, 0.9, 1
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
+            MDIconButton:
+                icon: "chart-bar"
+                user_font_size: "24sp"
+                md_bg_color: 0.8, 0.1, 0.1, 1
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                on_release: app.redirigir_por_rol2()
 
-            Label:
-                text: "💪  [b]Último entrenamiento[/b]"
-                markup: True
-                font_size: 20
-                halign: 'left'
-                text_size: self.size
-                font_name: 'data/fonts/DejaVuSans.ttf'
-
-            Label:
-                text: "Press de banca\n45 min\n350 cal"
-                font_size: 16
-                halign: 'left'
-                valign: 'top'
-                text_size: self.size
-                font_name: 'data/fonts/DejaVuSans.ttf'
-
-        Label:
-            text: "[b]PROGRESO[/b]"
-            markup: True
-            font_size: 18
-            size_hint_y: None
-            height: 30
-            font_name: 'data/fonts/DejaVuSans.ttf'
-
-        BoxLayout:
-            orientation: 'vertical'
-            size_hint_y: None
-            height: 160
-            padding: 10
-            canvas.before:
-                Color:
-                    rgba: 1, 1, 1, 1
-                Line:
-                    rectangle: self.x, self.y, self.width, self.height
-
-            Label:
-                text: "[i]Aquí iría el gráfico[/i]"
-                font_size: 16
-                color: 0.4, 0.4, 0.4, 1
-                font_name: 'data/fonts/DejaVuSans.ttf'
-
-        Button:
-            text: "INICIO RÁPIDO"
-            size_hint_y: None
-            height: 50
-            font_size: 18
-            font_name: 'data/fonts/DejaVuSans.ttf'
-
-        BoxLayout:
-            size_hint_y: None
-            height: 60
-            spacing: 10
-
-            Button:
-                text: "🏠"
-                on_release:
-                    app.root.current = 'pantalla3'
-            Button:
-                text: "➕"
-                on_release:app.redirigir_por_rol()
-            Button:
-                text: "STATS"
-                on_release:app.redirigir_por_rol2()
-            Button:
-                text: "📊"
-                on_release:
-                    app.root.current = 'pantalla7'
-                opacity: 1 if root.rol == 1 else 0
-                disabled: root.rol != 1
-            Button:
-                text: "👤"
-                on_release:
-                    app.root.current = 'pantalla5'
-
-
-
+            MDIconButton:
+                icon: "account"
+                user_font_size: "24sp"
+                md_bg_color: 0.8, 0.1, 0.1, 1
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                on_release: app.root.current = 'pantalla5'

@@ -141,6 +141,8 @@
                 md_bg_color: 0.8, 0.1, 0.1, 1
                 size_hint_x: 0.9
                 pos_hint: {"center_x": 0.5}
+                on_release:
+                    root.crear_usuario()
 
             MDLabel:
                 text: "¿Ya tienes tu cuenta? [ref=signup][color=CC1A1A]Inicia Sesión Aquí[/color][/ref]"

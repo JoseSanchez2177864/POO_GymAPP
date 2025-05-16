@@ -1,4 +1,11 @@
 from kivy.app import App
+from kivymd.uix.card import MDCard
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivy.uix.widget import Widget
+from kivymd.uix.label import MDLabel
+from kivymd.uix.button import MDRaisedButton
+from kivymd.uix.button import MDRaisedButton, MDFlatButton
+from kivymd.uix.dialog import MDDialog
 from kivy.uix.screenmanager import Screen
 from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
@@ -33,117 +40,129 @@ class CRUDup(Screen):
             self.ids.label_container.add_widget(Label(text="No hay usuarios registrados.", color=(1, 1, 1, 1)))
         else:
             for usuario in usuarios:
-                # Contenedor principal (Horizontal)
-                user_row = BoxLayout(orientation='horizontal', size_hint_y=None, height=100, padding=10, spacing=10)
+                # Contenedor principal vertical para texto y botones
+                user_column = BoxLayout(orientation='vertical', size_hint_y=None, padding=10, spacing=10)
+                user_column.bind(minimum_height=user_column.setter('height'))
                 
-                # Contenedor de información (Vertical)
-                info_box = BoxLayout(orientation='vertical', size_hint_x=1.5)
-                for info in [f"",
-                    f"Nombre: {usuario[1]} {usuario[2]}     Nombre de Usuario: {usuario[7]}",
-                    f"Correo: {usuario[3]}",
-                    f"Plan: {usuario[6]}     Rol: {usuario[-1] if usuario[-1] else 'Sin Rol'}"
-                ]:
-                    label = Label(
-                        text=info,
-                        size_hint_y=None,
-                        height=40,
-                        color=(1, 1, 1, 1),
-                        text_size=(self.width - 200, None),
-                        halign='left',
-                        valign='middle'
-                    )
-                    label.bind(texture_size=lambda inst, val: setattr(inst, 'height', inst.texture_size[1] + 10))
+                # Contenedor info vertical
+                info_box = BoxLayout(orientation='vertical', size_hint_y=None)
+                info_box.bind(minimum_height=info_box.setter('height'))
+                
+                lines = [
+                    f"Nombre: {usuario[1]} {usuario[2]}     Nombre de Usuario: {usuario[3]}",
+                    f"Correo: {usuario[4]}",
+                    f"Plan: {usuario[1]}     Rol: {usuario[-1] if usuario[-1] else 'Sin Rol'}"
+                ]
+
+                for i, info in enumerate(lines):
+                    if i == 0:
+                        label = Label(
+                            text=info,
+                            size_hint_y=None,
+                            color=(1, 1, 1, 1),
+                            text_size=(self.ids.label_container.width - 40, None),
+                            halign='left',
+                            valign='top'
+                        )
+                        label.bind(texture_size=lambda inst, val: setattr(inst, 'height', inst.texture_size[1] + 10))
+                    else:
+                        label = Label(
+                            text=info,
+                            size_hint_y=None,
+                            height=30,
+                            color=(1, 1, 1, 1),
+                            text_size=(self.ids.label_container.width - 40, None),
+                            halign='left',
+                            valign='middle'
+                        )
+                        label.bind(texture_size=lambda inst, val: setattr(inst, 'height', inst.texture_size[1] + 5))
                     info_box.add_widget(label)
                 
-                # Contenedor de botones (Vertical)
-                button_box = BoxLayout(orientation='vertical', size_hint_x=0.3, spacing=5, padding=(10,10))
+                user_column.add_widget(info_box)
+
+                # Espacio entre texto y botones
+                user_column.add_widget(Widget(size_hint_y=None, height=10))
                 
-                # Botón Cambiar Rol
-                btn_editar = Button(text="Cambiar Rol", size_hint_y=None, height=30, size_hint_x=None, width=80)
+                # Contenedor botones horizontal, centrados
+                button_box = BoxLayout(orientation='horizontal', spacing=15, size_hint_y=None, height=40)
+                
+                btn_editar = MDRaisedButton(
+                    text="Cambiar Rol",
+                    size_hint=(None, None),
+                    size=(110, 35),
+                    pos_hint={"center_x": 0.5}
+                )
                 btn_editar.bind(on_release=lambda x, u=usuario: self.editar_usuario(u))
                 
-                # Botón Eliminar
-                btn_eliminar = Button(text="Eliminar", size_hint_y=None, height=30, size_hint_x=None, width=80)
+                btn_eliminar = MDRaisedButton(
+                    text="Eliminar",
+                    size_hint=(None, None),
+                    size=(110, 35),
+                    pos_hint={"center_x": 0.5}
+                )
                 btn_eliminar.bind(on_release=lambda x, u=usuario: self.eliminar_usuario(u))
                 
                 button_box.add_widget(btn_editar)
                 button_box.add_widget(btn_eliminar)
                 
-                # Agregar las cajas al contenedor principal
-                user_row.add_widget(info_box)
-                user_row.add_widget(button_box)
+                user_column.add_widget(button_box)
 
-                self.ids.label_container.add_widget(user_row)
+                # Espacio debajo de los botones
+                user_column.add_widget(Widget(size_hint_y=None, height=15))
+                
+                self.ids.label_container.add_widget(user_column)
+
     def actualizar_vista(self):
         self.load_users()
 
-    # Métodos para manejar los botones (aún no implementados)
     def editar_usuario(self, usuario):
-    # Obtener el rol actual del usuario
-        rol_actual = usuario[-1]  # El rol está en la última posición de la tupla usuario
-
-    # Determinar el nuevo rol (si es 'Administrador', cambiar a 'Usuario' y viceversa)
+        rol_actual = usuario[-1]
         nuevo_rol = 'Usuario' if rol_actual == 'Administrador' else 'Administrador'
-    
-    # Actualizar el rol en la base de datos
+
         conexion = crear_conexion()
         cursor = conexion.cursor()
 
-    # Obtener el ID del rol (supongo que los roles tienen ID = 1 para Administrador y 2 para Usuario)
         cursor.execute("SELECT Id FROM Roles WHERE Descripcion = ?", (nuevo_rol,))
         nuevo_rol_id = cursor.fetchone()[0]
 
-    # Actualizar el rol del usuario en la tabla Usuario_Rol
         cursor.execute("""
-    UPDATE Usuario_Rol
-    SET Rol = ?
-    WHERE Usuario = ?
-    """, (nuevo_rol_id, usuario[0]))
-    
+        UPDATE Usuario_Rol
+        SET Rol = ?
+        WHERE Usuario = ?
+        """, (nuevo_rol_id, usuario[0]))
+
         conexion.commit()
         conexion.close()
-    
+
         print(f"Rol del usuario {usuario[1]} {usuario[2]} cambiado a {nuevo_rol}.")
-    
-    # Actualizar la vista para reflejar el cambio
         self.actualizar_vista()
 
-
     def eliminar_usuario(self, usuario):
-        print(f"Eliminar usuario: {usuario[0]}")
-        # Confirmación de eliminación
-        layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
-        label = Label(text=f"¿Estás seguro de que deseas eliminar a {usuario[1]}?")
-        layout.add_widget(label)
-    
-        botones = BoxLayout(size_hint_y=None, height=40, spacing=10)
-        btn_si = Button(text="Sí")
-        btn_no = Button(text="No")
+        texto = f"¿Estás seguro de que deseas eliminar a {usuario[1]}?"
+        
+        btn_si = MDFlatButton(text="Sí", on_release=lambda x: self.confirmar_eliminar_usuario(usuario, self.dialog))
+        btn_no = MDFlatButton(text="No", on_release=lambda x: self.dialog.dismiss())
+        
+        self.dialog = MDDialog(
+            title="Confirmar Eliminación",
+            text=texto,
+            buttons=[btn_si, btn_no],
+            auto_dismiss=False
+        )
+        self.dialog.open()
 
-        popup = Popup(title="Confirmar Eliminación", content=layout, size_hint=(0.5, 0.3))
-
-        btn_si.bind(on_release=lambda x: self.confirmar_eliminar_usuario(usuario, popup))
-        btn_no.bind(on_release=popup.dismiss)
-
-        botones.add_widget(btn_si)
-        botones.add_widget(btn_no)
-        layout.add_widget(botones)
-
-        popup.open()
-
-    def confirmar_eliminar_usuario(self, usuario, popup):
-        # Eliminar el usuario de la base de datos
+    def confirmar_eliminar_usuario(self, usuario, dialog):
         conexion = crear_conexion()
         cursor = conexion.cursor()
-    
+
         cursor.execute("DELETE FROM Usuarios WHERE Id = ?", (usuario[0],))
         cursor.execute("DELETE FROM Usuario_Rol WHERE Usuario = ?", (usuario[0],))
         conexion.commit()
         conexion.close()
-    
-        popup.dismiss()
+
+        dialog.dismiss()
         print(f"Usuario {usuario} eliminado.")
-        self.actualizar_vista()  # Método para actualizar la vista de usuarios
+        self.actualizar_vista()
 
 class TestApp(App):
     def build(self):

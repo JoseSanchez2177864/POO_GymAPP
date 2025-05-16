@@ -1,95 +1,188 @@
 <Configp>:
-    BoxLayout:
-        orientation: 'vertical'
-        padding: 10
-        spacing: 10
+    name: "configuracion"
+    MDScreen:
+        md_bg_color: 0.05, 0.05, 0.05, 1
 
-        # Encabezado
-        BoxLayout:
-            size_hint_y: None
-            height: 60
-            canvas.before:
-                Color:
-                    rgba: 0.9, 0.9, 0.9, 1
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
+        MDBoxLayout:
+            orientation: "vertical"
+            padding: dp(20), dp(20)
+            spacing: dp(15)
+            size_hint: None, None
+            size: dp(360), dp(640)
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
 
-            Label:
-                text: "[b]CONFIGURACIÓN DE USUARIO[/b]"
-                markup: True
-                font_size: 24
+            MDLabel:
+                text: "CONFIGURACIÓN DE USUARIO"
+                font_style: "H4"
+                halign: "center"
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                bold: True
 
-        # Información del usuario
-        BoxLayout:
-            orientation: 'vertical'
-            padding: 10
-            spacing: 10
+            ScrollView:
+                do_scroll_x: False
 
-            Label:
-                text: "Nombre: [b]{} {}[/b]".format(root.nombre, root.apellidos)
-                markup: True
-                font_size: 18
+                MDBoxLayout:
+                    orientation: "vertical"
+                    spacing: dp(6)
+                    padding: 0
+                    size_hint_y: None
+                    height: self.minimum_height
 
-            Label:
-                text: "Nombre de Usuario: [b]{}[/b]".format(root.nombreusuario)
-                markup: True
-                font_size: 18
-            
-            Label:
-                text: "Correo: [b]{}[/b]".format(root.correo)
-                markup: True
-                font_size: 18
+                    # Nombre
+                    MDLabel:
+                        text: "Nombre"
+                        font_style: "Subtitle1"
+                        halign: "left"
+                        theme_text_color: "Custom"
+                        text_color: 1, 0, 0, 1  # rojo
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                    MDLabel:
+                        text: "{} {}".format(root.nombre, root.apellidos)
+                        font_style: "Body1"
+                        halign: "left"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        size_hint_y: None
+                        height: self.texture_size[1]
 
-        # Opciones de configuración
-        BoxLayout:
-            orientation: 'vertical'
-            padding: 10
-            spacing: 10
+                    # Nombre de Usuario
+                    MDLabel:
+                        text: "Nombre de Usuario"
+                        font_style: "Subtitle1"
+                        halign: "left"
+                        theme_text_color: "Custom"
+                        text_color: 1, 0, 0, 1
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                    MDLabel:
+                        text: root.nombreusuario
+                        font_style: "Body1"
+                        halign: "left"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        size_hint_y: None
+                        height: self.texture_size[1]
 
-            Button:
-                text: "Cambiar contraseña"
+                    # Correo
+                    MDLabel:
+                        text: "Correo"
+                        font_style: "Subtitle1"
+                        halign: "left"
+                        theme_text_color: "Custom"
+                        text_color: 1, 0, 0, 1
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                    MDLabel:
+                        text: root.correo
+                        font_style: "Body1"
+                        halign: "left"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        size_hint_y: None
+                        height: self.texture_size[1]
+
+            MDBoxLayout:
+                orientation: "vertical"
                 size_hint_y: None
-                height: 50
-                font_size: 18
-                on_release: root.mostrar_popup_contrasena()
+                height: dp(210)
+                spacing: dp(15)
+                padding: 0, dp(10)
 
-            Button:
-                text: "Actualizar información"
+                MDRaisedButton:
+                    text: "Editar Usuarios"
+                    icon: "pencil"
+                    font_size: dp(14)
+                    size_hint: None, None
+                    md_bg_color: 0.8, 0.1, 0.1, 1
+                    on_release: app.root.current = 'pantalla7'
+                    opacity: 1 if root.rol == 1 else 0
+                    disabled: root.rol != 1
+                    pos_hint: {"center_x": 0.5}
+
+                MDRaisedButton:
+                    text: "Cambiar contraseña"
+                    md_bg_color: 0.8, 0.1, 0.1, 1
+                    size_hint_x: 0.9
+                    pos_hint: {"center_x": 0.5}
+                    on_release: root.mostrar_popup_contrasena()
+
+                MDRaisedButton:
+                    text: "Actualizar información"
+                    md_bg_color: 0.8, 0.1, 0.1, 1
+                    size_hint_x: 0.9
+                    pos_hint: {"center_x": 0.5}
+                    on_release: root.mostrar_popup_info()
+                
+
+                MDRaisedButton:
+                    text: "Cerrar sesión"
+                    md_bg_color: 0.8, 0.1, 0.1, 1
+                    size_hint_x: 0.9
+                    pos_hint: {"center_x": 0.5}
+                    on_release: app.root.get_screen('pantalla3').cerrar_sesion()
+
+            MDBoxLayout:
+                orientation: 'horizontal'
                 size_hint_y: None
-                height: 50
-                font_size: 18
-                on_release: root.mostrar_popup_info()
+                height: dp(50)
+                padding: dp(10), 0
+                spacing: dp(8)
 
-            Button:
-                text: "Cerrar sesión"
-                size_hint_y: None
-                height: 50
-                font_size: 18
-                background_color: 0.8, 0.1, 0.1, 1
-                color: 1, 1, 1, 1
-                on_release: 
-                    app.root.get_screen('pantalla3').cerrar_sesion()
-        BoxLayout:
-            size_hint_y: None
-            height: 60
-            spacing: 10
+                MDIconButton:
+                    icon: "home"
+                    size_hint: None, None
+                    size: dp(70), dp(40)
+                    md_bg_color: 0.8, 0.1, 0.1, 1
+                    on_release: app.root.current = 'pantalla3'
+                
+                MDIconButton:
+                    icon: "clipboard-list"
+                    user_font_size: "28sp"
+                    theme_text_color: "Custom"
+                    text_color: 1, 1, 1, 1
+                    md_bg_color: 0.8, 0.1, 0.1, 1
+                    radius: [10,]
+                    size_hint: None, None
+                    size: dp(70), dp(40)
+                    on_release: root.redirigir_por_rol()
 
-            Button:
-                text: "🏠"
-                on_release:
-                    app.root.current = 'pantalla3'
-            Button:
-                text: "➕"
-                on_release:
-                    root.redirigir_por_rol()
-            Button:
-                text: "📊"
-                on_release:
-                    app.root.current = 'pantalla7'
-                opacity: 1 if root.rol == 1 else 0
-                disabled: root.rol != 1
-            Button:
-                text: "👤"
-                on_release:
-                    app.root.current = 'pantalla5'
+                Widget:
+                    size_hint_x: 0.5
+
+                MDIconButton:
+                    icon: "plus"
+                    user_font_size: "28sp"
+                    theme_text_color: "Custom"
+                    text_color: 1, 1, 1, 1
+                    md_bg_color: 0.8, 0.1, 0.1, 1
+                    radius: [10,]
+                    size_hint: None, None
+                    size: dp(70), dp(40)
+                
+                Widget:
+                    size_hint_x: 0.5
+                
+                MDIconButton:
+                    icon: "chart-bar"
+                    user_font_size: "30sp"
+                    theme_text_color: "Custom"
+                    text_color: 1, 1, 1, 1
+                    md_bg_color: 0.8, 0.1, 0.1, 1
+                    radius: [10,]
+                    size_hint: None, None
+                    size: dp(80), dp(45)
+                    on_release: app.root.current = 'pantalla6'
+
+                MDIconButton:
+                    icon: "account"
+                    size_hint: None, None
+                    size: dp(70), dp(40)
+                    md_bg_color: 0.8, 0.1, 0.1, 1
+                    on_release: app.root.current = 'pantalla5'
+
+
+
+    
+

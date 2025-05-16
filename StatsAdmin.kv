@@ -1,20 +1,99 @@
-<StatsAdminp>:
-    BoxLayout:
+<Statsp>:
+    MDBoxLayout:
         orientation: 'vertical'
-        padding: 10
-        spacing: 10
+        md_bg_color: 0.05, 0.05, 0.05, 1  # Fondo oscuro
+        padding: dp(10)
+        spacing: dp(10)
 
-        Label:
+        MDLabel:
             text: "Progreso de RM"
-            font_size: 24
+            font_size: "24sp"
+            halign: "center"
+            bold: True
+            theme_text_color: "Custom"
+            text_color: 1, 1, 1, 1
 
-        Image:
-            id: imagen_musculos
-            source: 'musculos_base.png'  # Imagen base de músculos
-            size_hint_y: 0.5
+        MDBoxLayout:
+            orientation: "vertical"
+            spacing: dp(10)
+            padding: dp(10)
+            md_bg_color: 0.15, 0.15, 0.15, 1
+            radius: [15, 15, 15, 15]
+            size_hint_y: 0.85
 
-        BoxLayout:
-            size_hint_y: 0.5
+            Image:
+                id: imagen_musculos
+                source: 'musculos_base.png'
+                size_hint_y: 0.5
+                allow_stretch: True
+                keep_ratio: True
+
             Image:
                 id: grafica_rm
                 source: 'grafica_rm.png'
+                size_hint_y: 0.5
+                allow_stretch: True
+                keep_ratio: True
+
+        MDBoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: dp(50)
+            padding: dp(10), 0
+            spacing: dp(8)
+
+            MDIconButton:
+                icon: "home"
+                size_hint: None, None
+                size: dp(70), dp(40)
+                md_bg_color: 0.8, 0.1, 0.1, 1
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                on_release: app.root.current = 'pantalla3'
+
+            MDIconButton:
+                icon: "clipboard-list"
+                user_font_size: "28sp"
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                md_bg_color: 0.8, 0.1, 0.1, 1
+                radius: [10, ]
+                size_hint: None, None
+                size: dp(70), dp(40)
+                on_release: app.redirigir_por_rol()  # ✅ Llama al método desde app.py
+
+            Widget:
+                size_hint_x: 0.5
+
+            MDIconButton:
+                icon: "plus"
+                user_font_size: "28sp"
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                md_bg_color: 0.8, 0.1, 0.1, 1
+                radius: [10, ]
+                size_hint: None, None
+                size: dp(70), dp(40)
+
+            Widget:
+                size_hint_x: 0.5
+
+            MDIconButton:
+                icon: "chart-bar"
+                user_font_size: "30sp"
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                md_bg_color: 0.8, 0.1, 0.1, 1
+                radius: [10, ]
+                size_hint: None, None
+                size: dp(80), dp(45)
+                on_release: app.root.current = 'pantalla6'
+
+            MDIconButton:
+                icon: "account"
+                size_hint: None, None
+                size: dp(70), dp(40)
+                md_bg_color: 0.8, 0.1, 0.1, 1
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                on_release: app.root.current = 'pantalla5'

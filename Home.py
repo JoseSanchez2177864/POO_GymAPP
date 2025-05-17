@@ -14,6 +14,8 @@ from CRUDu import CRUDup
 from CRUDp import CRUDpp
 from Planes import Planesp
 from StatsAdmin import StatsAdminp
+import kivymd
+print("Hola aquí esta la version:",kivymd.__version__)
 
 class GymApp(MDApp):
     def build(self):

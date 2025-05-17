@@ -266,3 +266,4 @@ class Configp(Screen):
             self.manager.current = 'pantalla8'
         elif self.rol == 2:
             self.manager.current = 'pantalla9'
+    

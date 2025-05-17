@@ -60,7 +60,7 @@
                 radius: [10, ]
                 size_hint: None, None
                 size: dp(70), dp(40)
-                on_release: app.redirigir_por_rol()  # ✅ Método definido en app.py
+                on_release: app.root.current = 'pantalla9' # ✅ Método definido en app.py
 
             Widget:
                 size_hint_x: 0.5

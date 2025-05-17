@@ -99,3 +99,13 @@ class Statsp(Screen):
         imagen_base.save("musculos_dinamicos.png")
         self.ids.imagen_musculos.source = "musculos_dinamicos.png"
         self.ids.imagen_musculos.reload()
+    def redirigir_por_rol(self):
+        if self.rol == 1:
+            self.manager.current = 'pantalla8'
+        elif self.rol == 2:
+            self.manager.current = 'pantalla9'
+    def redirigir_por_rol2(self):
+        if self.rol_actual == 1:
+            self.root.current = 'pantalla10'  # Pantalla para administradores
+        elif self.rol_actual == 2:
+            self.root.current = 'pantalla6'

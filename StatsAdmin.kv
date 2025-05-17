@@ -1,51 +1,53 @@
-<Statsp>:
-    MDBoxLayout:
-        orientation: 'vertical'
-        md_bg_color: 0.05, 0.05, 0.05, 1  # Fondo oscuro
-        padding: dp(10)
-        spacing: dp(10)
+<StatsAdminp>:
+    FloatLayout:
+        md_bg_color: 0.05, 0.05, 0.05, 1
 
         MDLabel:
-            text: "Progreso de RM"
+            text: "Estadísticas de Usuarios"
             font_size: "24sp"
             halign: "center"
-            bold: True
             theme_text_color: "Custom"
             text_color: 1, 1, 1, 1
+            bold: True
+            pos_hint: {"center_y": 0.95}
 
         MDBoxLayout:
             orientation: "vertical"
+            size_hint: 0.9, 0.75
+            pos_hint: {"center_x": 0.5, "center_y": 0.55}
             spacing: dp(10)
             padding: dp(10)
             md_bg_color: 0.15, 0.15, 0.15, 1
             radius: [15, 15, 15, 15]
-            size_hint_y: 0.85
 
-            Image:
-                id: imagen_musculos
-                source: 'musculos_base.png'
-                size_hint_y: 0.5
-                allow_stretch: True
-                keep_ratio: True
+            ScrollView:
+                do_scroll_x: False
+                do_scroll_y: True
+                MDBoxLayout:
+                    id: label_container
+                    orientation: "vertical"
+                    size_hint_y: None
+                    height: self.minimum_height
+                    spacing: dp(10)
+                    padding: dp(10)
 
-            Image:
-                id: grafica_rm
-                source: 'grafica_rm.png'
-                size_hint_y: 0.5
-                allow_stretch: True
-                keep_ratio: True
+        MDSeparator:
+            height: dp(1)
+            md_bg_color: 0.4, 0.4, 0.4, 1
+            pos_hint: {"center_x": 0.5, "center_y": 0.11}
 
+        # Barra inferior fija como en CRUDpp
         MDBoxLayout:
             orientation: 'horizontal'
             size_hint_y: None
             height: dp(50)
             padding: dp(10), 0
-            spacing: dp(8)
+            spacing: dp(10)
+            pos_hint: {"center_x": 0.5, "y": 0.02}
 
             MDIconButton:
                 icon: "home"
-                size_hint: None, None
-                size: dp(70), dp(40)
+                user_font_size: "24sp"
                 md_bg_color: 0.8, 0.1, 0.1, 1
                 theme_text_color: "Custom"
                 text_color: 1, 1, 1, 1
@@ -53,46 +55,36 @@
 
             MDIconButton:
                 icon: "clipboard-list"
-                user_font_size: "28sp"
+                user_font_size: "24sp"
                 theme_text_color: "Custom"
                 text_color: 1, 1, 1, 1
                 md_bg_color: 0.8, 0.1, 0.1, 1
-                radius: [10, ]
-                size_hint: None, None
-                size: dp(70), dp(40)
-                on_release: app.redirigir_por_rol()  # ✅ Llama al método desde app.py
+                on_release: app.root.current = 'pantalla8'
 
             Widget:
                 size_hint_x: 0.5
 
             MDIconButton:
                 icon: "plus"
-                user_font_size: "28sp"
+                user_font_size: "24sp"
                 theme_text_color: "Custom"
                 text_color: 1, 1, 1, 1
                 md_bg_color: 0.8, 0.1, 0.1, 1
-                radius: [10, ]
-                size_hint: None, None
-                size: dp(70), dp(40)
 
             Widget:
                 size_hint_x: 0.5
 
             MDIconButton:
                 icon: "chart-bar"
-                user_font_size: "30sp"
+                user_font_size: "24sp"
                 theme_text_color: "Custom"
                 text_color: 1, 1, 1, 1
                 md_bg_color: 0.8, 0.1, 0.1, 1
-                radius: [10, ]
-                size_hint: None, None
-                size: dp(80), dp(45)
-                on_release: app.root.current = 'pantalla6'
+                on_release: app.root.current = 'pantalla10'
 
             MDIconButton:
                 icon: "account"
-                size_hint: None, None
-                size: dp(70), dp(40)
+                user_font_size: "24sp"
                 md_bg_color: 0.8, 0.1, 0.1, 1
                 theme_text_color: "Custom"
                 text_color: 1, 1, 1, 1

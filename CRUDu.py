@@ -51,7 +51,7 @@ class CRUDup(Screen):
                 lines = [
                     f"Nombre: {usuario[1]} {usuario[2]}     Nombre de Usuario: {usuario[3]}",
                     f"Correo: {usuario[4]}",
-                    f"Plan: {usuario[1]}     Rol: {usuario[-1] if usuario[-1] else 'Sin Rol'}"
+                    f"Plan: {usuario[8]}     Rol: {usuario[-1] if usuario[-1] else 'Sin Rol'}"
                 ]
 
                 for i, info in enumerate(lines):

@@ -1,12 +1,12 @@
 from kivy.app import App
 from kivy.uix.screenmanager import Screen
-from kivy.uix.label import Label
+from kivymd.uix.textfield import MDTextField
+from kivy.uix.modalview import ModalView
+from kivymd.uix.button import MDRaisedButton, MDFlatButton
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.button import Button
-from kivy.uix.popup import Popup
+from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.lang import Builder
-from kivymd.uix.button import MDRaisedButton, MDFlatButton
 from kivymd.uix.dialog import MDDialog
 from ConBD import crear_conexion
 
@@ -54,7 +54,7 @@ class CRUDpp(Screen):
                 button_box = BoxLayout(orientation='horizontal', spacing=15, size_hint_y=None, height=40)
 
                 btn_editar = MDRaisedButton(text="Modificar Plan", size_hint=(None, None), size=(110, 35))
-                btn_editar.bind(on_release=lambda x, u=plan: self.mostrar_popup_info(u))
+                btn_editar.bind(on_release=lambda x, u=plan: self.mostrar_popup_plan(modificar=True, plan=u))
 
                 btn_eliminar = MDRaisedButton(text="Eliminar", size_hint=(None, None), size=(110, 35))
                 btn_eliminar.bind(on_release=lambda x, u=plan: self.eliminar_usuario(u))
@@ -70,20 +70,98 @@ class CRUDpp(Screen):
         self.load_users()
 
     def mostrar_popup_agregar(self):
-        layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
-        self.nombre_plan_input = TextInput(hint_text="Nombre del plan")
-        self.descripcion_plan_input = TextInput(hint_text="Descripción del plan")
-        self.costo_plan_input = TextInput(hint_text="Costo del plan")
+        self.mostrar_popup_plan(modificar=False)
 
-        guardar_btn = MDRaisedButton(text='Agregar Plan', size_hint_y=None, height=40)
-        guardar_btn.bind(on_release=self.agregar_plan)
+    def mostrar_popup_plan(self, modificar=False, plan=None):
+    # Layout principal
+        layout = BoxLayout(orientation='vertical', padding=20, spacing=15)
+
+        # Texto indicativo arriba
+        titulo_texto = "Modificar Plan" if modificar else "Agregar Plan"
+        titulo = Label(
+            text=titulo_texto,
+            size_hint_y=None,
+            height=30,
+            color=(1, 1, 1, 1),
+            font_size='20sp',
+            bold=True,
+            halign='center'
+        )
+        # Para que el texto se centre correctamente
+        titulo.bind(size=lambda s, w: setattr(s, 'text_size', w))
+
+        layout.add_widget(titulo)
+
+        # Inputs
+        self.nombre_plan_input = MDTextField(
+            hint_text="Nombre del plan",
+            mode="rectangle",
+            size_hint_x=0.9,
+            pos_hint={"center_x": 0.5},
+            text=plan[1] if modificar and plan else ""
+        )
+        self.descripcion_plan_input = MDTextField(
+            hint_text="Descripción del plan",
+            mode="rectangle",
+            size_hint_x=0.9,
+            pos_hint={"center_x": 0.5},
+            multiline=True,
+            text=plan[2] if modificar and plan else ""
+        )
+        self.costo_plan_input = MDTextField(
+            hint_text="Costo del plan",
+            mode="rectangle",
+            size_hint_x=0.9,
+            pos_hint={"center_x": 0.5},
+            input_filter="float",
+            text=str(plan[3]) if modificar and plan else ""
+        )
 
         layout.add_widget(self.nombre_plan_input)
         layout.add_widget(self.descripcion_plan_input)
         layout.add_widget(self.costo_plan_input)
 
-        self.dialog = MDDialog(title='Agregar Plan', type='custom', content_cls=layout, size_hint=(0.5, 0.5))
-        self.dialog.open()
+        # Botones
+        if modificar:
+            guardar_btn = MDRaisedButton(
+                text='Guardar Cambios',
+                size_hint=(0.4, None),
+                height=45,
+                md_bg_color="blue"
+            )
+            guardar_btn.bind(on_release=lambda x: self.guardar_info_actualizada(plan[0]))
+        else:
+            guardar_btn = MDRaisedButton(
+                text='Agregar Plan',
+                size_hint=(0.4, None),
+                height=45,
+                md_bg_color="green"
+            )
+            guardar_btn.bind(on_release=self.agregar_plan)
+
+        cancelar_btn = MDFlatButton(
+            text='Cancelar',
+            size_hint=(0.4, None),
+            height=45,
+            text_color="red"
+        )
+        cancelar_btn.bind(on_release=lambda x: self.popup.dismiss())
+
+        button_box = BoxLayout(orientation='horizontal', spacing=20, padding=[0, 10])
+        button_box.add_widget(cancelar_btn)
+        button_box.add_widget(guardar_btn)
+
+        layout.add_widget(button_box)
+
+        # Crear y abrir popup
+        self.popup = ModalView(
+            size_hint=(0.9, None),
+            height=480,  # un poco más alto para el título
+            auto_dismiss=False,
+            background_color=(0, 0, 0, 0.7)
+        )
+        self.popup.add_widget(layout)
+        self.popup.open()
 
     def agregar_plan(self, *args):
         nombre = self.nombre_plan_input.text
@@ -111,28 +189,38 @@ class CRUDpp(Screen):
         conexion.commit()
         conexion.close()
 
-        self.dialog.dismiss()
+        self.popup.dismiss()
         print(f"Plan '{nombre}' agregado correctamente.")
         self.actualizar_vista()
 
-    def mostrar_popup_info(self, plan):
-        self.obtener_dato_bd(plan[0])
+    def guardar_info_actualizada(self, plan_id):
+        nombre = self.nombre_plan_input.text
+        descripcion = self.descripcion_plan_input.text
+        costo = self.costo_plan_input.text
 
-        layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
-        self.input_nombre = TextInput(hint_text='Nombre', text=self.nombre_plan)
-        self.input_descripcion = TextInput(hint_text='Descripción', text=self.descripcion)
-        self.input_costo = TextInput(hint_text='Costo', text=str(self.costo))
+        if not nombre or not descripcion or not costo:
+            print("Todos los campos son obligatorios.")
+            return
 
-        guardar_btn = MDRaisedButton(text='Guardar cambios')
-        guardar_btn.bind(on_release=lambda x: self.guardar_info_actualizada(plan[0]))
+        try:
+            costo = float(costo)
+        except ValueError:
+            print("El costo debe ser numérico.")
+            return
 
-        layout.add_widget(self.input_nombre)
-        layout.add_widget(self.input_descripcion)
-        layout.add_widget(self.input_costo)
-        layout.add_widget(guardar_btn)
+        conexion = crear_conexion()
+        cursor = conexion.cursor()
 
-        self.dialog = MDDialog(title='Modificar Plan', type='custom', content_cls=layout, size_hint=(0.5, 0.5))
-        self.dialog.open()
+        cursor.execute("""
+            UPDATE Planes SET Nombre = ?, Descripcion = ?, Costo = ? WHERE Id = ?
+        """, (nombre, descripcion, costo, plan_id))
+
+        conexion.commit()
+        conexion.close()
+
+        self.popup.dismiss()
+        print(f"Plan '{nombre}' modificado correctamente.")
+        self.actualizar_vista()
 
     def eliminar_usuario(self, plan):
         self.dialog = MDDialog(

@@ -23,21 +23,33 @@
             ScrollView:
                 do_scroll_x: False
                 do_scroll_y: True
+
                 MDBoxLayout:
                     id: label_container
                     orientation: "vertical"
                     size_hint_y: None
                     height: self.minimum_height
                     spacing: dp(10)
-                    padding: dp(10)
+                    padding: dp(10), dp(10), dp(10), dp(10)  # padding inferior reducido
                     md_bg_color: 0.1, 0.1, 0.1, 1
                     radius: [10, 10, 10, 10]
 
+        # Botón fuera del ScrollView, sobre el FloatLayout y por encima del separador
+        MDRaisedButton:
+            text: "Agregar Planes"
+            size_hint: None, None
+            size: dp(150), dp(50)
+            pos_hint: {"center_x": 0.5, "y": 0.13}  # Posición ajustada justo arriba del separador
+            md_bg_color: 0.2, 0.6, 0.2, 1
+            on_release: root.mostrar_popup_agregar()
+
+        # Separador
         MDSeparator:
             height: dp(1)
             md_bg_color: 0.4, 0.4, 0.4, 1
-            pos_hint: {"center_x": 0.5, "center_y": 0.15}
+            pos_hint: {"center_x": 0.5, "center_y": 0.11}
 
+        # Barra inferior de iconos
         MDBoxLayout:
             orientation: 'horizontal'
             size_hint_y: None
@@ -53,7 +65,7 @@
                 theme_text_color: "Custom"
                 text_color: 1, 1, 1, 1
                 on_release: app.root.current = 'pantalla3'
-                
+
             MDIconButton:
                 icon: "clipboard-list"
                 user_font_size: "24sp"
@@ -91,11 +103,3 @@
                 theme_text_color: "Custom"
                 text_color: 1, 1, 1, 1
                 on_release: app.root.current = 'pantalla5'
-
-        MDRaisedButton:
-            text: "Agregar Planes"
-            size_hint: None, None
-            size: dp(150), dp(50)
-            pos_hint: {"right": 0.98, "top": 0.28}
-            md_bg_color: 0.2, 0.6, 0.2, 1
-            on_release: root.mostrar_popup_agregar()

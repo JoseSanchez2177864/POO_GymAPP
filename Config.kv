@@ -1,15 +1,16 @@
 <Configp>:
     name: "configuracion"
-    MDScreen:
+    FloatLayout:
         md_bg_color: 0.05, 0.05, 0.05, 1
 
         MDBoxLayout:
             orientation: "vertical"
-            padding: dp(20), dp(20)
-            spacing: dp(15)
-            size_hint: None, None
-            size: dp(360), dp(640)
-            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+            size_hint: 0.9, 0.85
+            pos_hint: {"center_x": 0.5, "center_y": 0.55}
+            spacing: dp(10)
+            padding: dp(10)
+            md_bg_color: 0.15, 0.15, 0.15, 1
+            radius: [15, 15, 15, 15]
 
             MDLabel:
                 text: "CONFIGURACIÓN DE USUARIO"
@@ -29,13 +30,13 @@
                     size_hint_y: None
                     height: self.minimum_height
 
-                    # Nombre
+                    # Datos de usuario
                     MDLabel:
                         text: "Nombre"
                         font_style: "Subtitle1"
                         halign: "left"
                         theme_text_color: "Custom"
-                        text_color: 1, 0, 0, 1  # rojo
+                        text_color: 1, 0, 0, 1
                         size_hint_y: None
                         height: self.texture_size[1]
                     MDLabel:
@@ -47,7 +48,6 @@
                         size_hint_y: None
                         height: self.texture_size[1]
 
-                    # Nombre de Usuario
                     MDLabel:
                         text: "Nombre de Usuario"
                         font_style: "Subtitle1"
@@ -65,7 +65,6 @@
                         size_hint_y: None
                         height: self.texture_size[1]
 
-                    # Correo
                     MDLabel:
                         text: "Correo"
                         font_style: "Subtitle1"
@@ -95,6 +94,7 @@
                     icon: "pencil"
                     font_size: dp(14)
                     size_hint: None, None
+                    size: dp(200), dp(45)
                     md_bg_color: 0.8, 0.1, 0.1, 1
                     on_release: app.root.current = 'pantalla7'
                     opacity: 1 if root.rol == 1 else 0
@@ -115,74 +115,71 @@
                     pos_hint: {"center_x": 0.5}
                     on_release: root.mostrar_popup_info()
                 
-
                 MDRaisedButton:
                     text: "Cerrar sesión"
                     md_bg_color: 0.8, 0.1, 0.1, 1
                     size_hint_x: 0.9
                     pos_hint: {"center_x": 0.5}
                     on_release: app.root.get_screen('pantalla3').cerrar_sesion()
-
-            MDBoxLayout:
-                orientation: 'horizontal'
-                size_hint_y: None
-                height: dp(50)
-                padding: dp(10), 0
-                spacing: dp(8)
-
-                MDIconButton:
-                    icon: "home"
-                    size_hint: None, None
-                    size: dp(70), dp(40)
-                    md_bg_color: 0.8, 0.1, 0.1, 1
-                    on_release: app.root.current = 'pantalla3'
-                
-                MDIconButton:
-                    icon: "clipboard-list"
-                    user_font_size: "28sp"
-                    theme_text_color: "Custom"
-                    text_color: 1, 1, 1, 1
-                    md_bg_color: 0.8, 0.1, 0.1, 1
-                    radius: [10,]
-                    size_hint: None, None
-                    size: dp(70), dp(40)
-                    on_release: root.redirigir_por_rol()
-
                 Widget:
-                    size_hint_x: 0.5
+                    size_hint_x: 1.5
+        # Separador fijo
+        MDSeparator:
+            height: dp(1)
+            md_bg_color: 0.4, 0.4, 0.4, 1
+            pos_hint: {"center_x": 0.5, "center_y": 0.11}
 
-                MDIconButton:
-                    icon: "plus"
-                    user_font_size: "28sp"
-                    theme_text_color: "Custom"
-                    text_color: 1, 1, 1, 1
-                    md_bg_color: 0.8, 0.1, 0.1, 1
-                    radius: [10,]
-                    size_hint: None, None
-                    size: dp(70), dp(40)
-                
-                Widget:
-                    size_hint_x: 0.5
-                
-                MDIconButton:
-                    icon: "chart-bar"
-                    user_font_size: "30sp"
-                    theme_text_color: "Custom"
-                    text_color: 1, 1, 1, 1
-                    md_bg_color: 0.8, 0.1, 0.1, 1
-                    radius: [10,]
-                    size_hint: None, None
-                    size: dp(80), dp(45)
-                    on_release: app.root.current = 'pantalla6'
+        # Barra inferior fija como en CRUDpp
+        MDBoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: dp(50)
+            padding: dp(10), 0
+            spacing: dp(10)
+            pos_hint: {"center_x": 0.5, "y": 0.02}
 
-                MDIconButton:
-                    icon: "account"
-                    size_hint: None, None
-                    size: dp(70), dp(40)
-                    md_bg_color: 0.8, 0.1, 0.1, 1
-                    on_release: app.root.current = 'pantalla5'
+            MDIconButton:
+                icon: "home"
+                user_font_size: "24sp"
+                md_bg_color: 0.8, 0.1, 0.1, 1
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                on_release: app.root.current = 'pantalla3'
 
+            MDIconButton:
+                icon: "clipboard-list"
+                user_font_size: "24sp"
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                md_bg_color: 0.8, 0.1, 0.1, 1
+                on_release: root.redirigir_por_rol()
 
+            Widget:
+                size_hint_x: 0.5
 
-    
+            MDIconButton:
+                icon: "plus"
+                user_font_size: "24sp"
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                md_bg_color: 0.8, 0.1, 0.1, 1
+                on_release: root.agregar_usuario()
 
+            Widget:
+                size_hint_x: 0.5
+
+            MDIconButton:
+                icon: "chart-bar"
+                user_font_size: "24sp"
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                md_bg_color: 0.8, 0.1, 0.1, 1
+                on_release: app.root.current = 'pantalla6'
+
+            MDIconButton:
+                icon: "account"
+                user_font_size: "24sp"
+                md_bg_color: 0.8, 0.1, 0.1, 1
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                on_release: app.root.current = 'pantalla5'

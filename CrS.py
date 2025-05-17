@@ -2,17 +2,70 @@ from kivy.app import App
 from kivy.uix.screenmanager import Screen
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
+from kivy.metrics import dp
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.widget import Widget
+from kivymd.uix.label import MDLabel
+from kivymd.uix.button import MDRaisedButton
+from kivymd.uix.card import MDCard
+from kivy.uix.modalview import ModalView
 from ConBD import crear_conexion
 
 class CrSp(Screen):
     def mostrar_mensaje(self, titulo, mensaje):
-        popup = Popup(
-            title=titulo,
-            content=Label(text=mensaje),
-            size_hint=(None, None), 
-            size=(400, 200),
+        # Layout principal del popup
+        layout = BoxLayout(orientation="vertical", spacing=15, padding=20)
+
+        # Título estilizado
+        titulo_label = MDLabel(
+            text=titulo,
+            halign="center",
+            theme_text_color="Custom",
+            text_color=(1, 0.3, 0.3, 1),
+            bold=True,
+            font_style="H6"
+        )
+
+        # Mensaje
+        mensaje_label = MDLabel(
+            text=mensaje,
+            halign="center",
+            theme_text_color="Custom",
+            text_color=(1, 1, 1, 0.9),
+        )
+
+        # Botón cerrar
+        cerrar_btn = MDRaisedButton(
+            text="Cerrar",
+            md_bg_color=(0.8, 0.1, 0.1, 1),
+            pos_hint={"center_x": 0.5},
+            on_release=lambda x: popup.dismiss()
+        )
+
+        layout.add_widget(titulo_label)
+        layout.add_widget(mensaje_label)
+        layout.add_widget(Widget(size_hint_y=None, height=10))
+        layout.add_widget(cerrar_btn)
+
+        # Contenedor visual
+        card = MDCard(
+            orientation="vertical",
+            padding=dp(20),
+            size_hint=(None, None),
+            size=(dp(280), dp(200)),
+            md_bg_color=(0.2, 0.2, 0.2, 0.85),
+            radius=[20, 20, 20, 20]
+        )
+        card.add_widget(layout)
+
+        # ModalView con transparencia
+        popup = ModalView(
+            size_hint=(None, None),
+            size=(dp(300), dp(220)),
+            background_color=(0, 0, 0, 0.7),
             auto_dismiss=True
         )
+        popup.add_widget(card)
         popup.open()
 
     def crear_usuario(self):

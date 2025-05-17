@@ -1,22 +1,21 @@
 from kivy.app import App
 from kivymd.app import MDApp
-from kivymd.uix.button import MDRaisedButton, MDIconButton
-from kivymd.icon_definitions import md_icons
+from kivymd.uix.button import MDRaisedButton, MDFlatButton
+from kivymd.uix.card import MDCard
+from kivymd.uix.textfield import MDTextField
 from kivy.uix.screenmanager import Screen
+from kivy.uix.widget import Widget
 from kivy.lang import Builder
-from kivy.properties import NumericProperty
-from kivy.properties import StringProperty
-from kivy.uix.popup import Popup
+from kivy.properties import NumericProperty, StringProperty
+from kivy.uix.modalview import ModalView
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
-from kivy.uix.textinput import TextInput
-from kivy.uix.button import Button
+from kivy.uix.anchorlayout import AnchorLayout
 from ConBD import crear_conexion
 
-# Cargamos el KV
 Builder.load_file("Config.kv")
 
-# Definimos la clase Configp
+
 class Configp(Screen):
     rol = NumericProperty(2)
     nombre = StringProperty()
@@ -25,28 +24,83 @@ class Configp(Screen):
     correo = StringProperty()
 
     def mostrar_popup_info(self):
-        layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
+# Layout principal
+        layout = BoxLayout(orientation='vertical', padding=20, spacing=15)
 
-        self.input_nombre = TextInput(hint_text='Nombre', text=self.nombre)
-        self.input_apellidos = TextInput(hint_text='Apellidos', text=self.apellidos)
-        self.input_nombreusuario = TextInput(hint_text='Nombre de Usuario', text=self.nombreusuario)
-        self.input_correo = TextInput(hint_text='Correo', text=self.correo)
+        # Texto indicativo arriba
+        titulo_texto = "Modificar Información"
+        titulo = Label(
+            text=titulo_texto,
+            size_hint_y=None,
+            height=30,
+            color=(1, 1, 1, 1),
+            font_size='20sp',
+            bold=True,
+            halign='center'
+        )
+        # Para que el texto se centre correctamente
+        titulo.bind(size=lambda s, w: setattr(s, 'text_size', w))
 
-        guardar_btn = Button(text='Guardar cambios', size_hint_y=None, height=40)
-        guardar_btn.bind(on_release=self.guardar_info_actualizada)
+        layout.add_widget(titulo)
 
-        layout.add_widget(Label(text='Editar Información'))
+        # Inputs
+        self.input_nombre = MDTextField(
+                                        hint_text='Nombre',
+                                        text=self.nombre,
+                                        mode='rectangle',
+                                        )
+        self.input_apellidos = MDTextField(hint_text='Apellidos',
+                                        text=self.apellidos,
+                                        mode='rectangle',
+                                        )
+        self.input_nombreusuario = MDTextField(hint_text='Nombre de Usuario',
+                                        text=self.nombreusuario,
+                                        mode='rectangle',
+                                        )
+        self.input_correo = MDTextField(hint_text='Correo',
+                                        text=self.correo,
+                                        mode='rectangle',
+                                        )
+
         layout.add_widget(self.input_nombre)
         layout.add_widget(self.input_apellidos)
         layout.add_widget(self.input_nombreusuario)
         layout.add_widget(self.input_correo)
-        layout.add_widget(guardar_btn)
 
-        self.popup = Popup(title='Actualizar información',
-                       content=layout,
-                       size_hint=(None, None), size=(400, 500),
-                       auto_dismiss=True)
+        layout.add_widget(Widget(size_hint_y=None, height=40))
+
+        # Botones
+        guardar_btn = MDRaisedButton(
+            text='Modificar Usuario',
+            size_hint=(0.4, None),
+            height=45,
+            md_bg_color="green"    )
+        guardar_btn.bind(on_release=self.guardar_info_actualizada)
+
+        cancelar_btn = MDFlatButton(
+            text='Cancelar',
+            size_hint=(0.4, None),
+            height=45,
+            text_color="red"
+        )
+        cancelar_btn.bind(on_release=lambda x: self.popup.dismiss())
+
+        button_box = BoxLayout(orientation='horizontal', spacing=20, padding=[0, 10])
+        button_box.add_widget(cancelar_btn)
+        button_box.add_widget(guardar_btn)
+
+        layout.add_widget(button_box)
+
+        # Crear y abrir popup
+        self.popup = ModalView(
+            size_hint=(0.9, None),
+            height=480,  # un poco más alto para el título
+            auto_dismiss=False,
+            background_color=(0, 0, 0, 0.7)
+        )
+        self.popup.add_widget(layout)
         self.popup.open()
+
 
     def guardar_info_actualizada(self, instance):
         nuevo_nombre = self.input_nombre.text.strip()
@@ -55,7 +109,6 @@ class Configp(Screen):
         nuevo_correo = self.input_correo.text.strip()
 
         if not (nuevo_nombre and nuevo_apellidos and nuevo_usuario and nuevo_correo):
-            self.popup.content.add_widget(Label(text='❌ Todos los campos deben estar completos'))
             return
 
         conn = crear_conexion()
@@ -69,7 +122,7 @@ class Configp(Screen):
                 SET Nombre = ?, Apellidos = ?, Nombre_Usuario = ?, Correo = ?
                 WHERE Nombre_Usuario = ?
             """, (nuevo_nombre, nuevo_apellidos, nuevo_usuario, nuevo_correo, usuario_actual))
-            conn.commit()            
+            conn.commit()
             self.nombre = nuevo_nombre
             self.apellidos = nuevo_apellidos
             self.nombreusuario = nuevo_usuario
@@ -77,32 +130,85 @@ class Configp(Screen):
             app.usuario_actual = nuevo_usuario
             self.popup.dismiss()
         except Exception as e:
-            self.popup.content.add_widget(Label(text=f'❌ Error: {str(e)}'))
+            print(f'❌ Error: {str(e)}')
         finally:
             conn.close()
-
-
     def mostrar_popup_contrasena(self):
-        layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
+    # Layout principal
+        layout = BoxLayout(orientation='vertical', padding=20, spacing=15)
 
-        self.old_pass_input = TextInput(hint_text='Contraseña actual', password=True)
-        self.new_pass_input = TextInput(hint_text='Nueva contraseña', password=True)
-        self.confirm_pass_input = TextInput(hint_text='Confirmar nueva contraseña', password=True)
+        # Texto indicativo arriba
+        titulo_texto = "Cambiar Contraseña"
+        titulo = Label(
+            text=titulo_texto,
+            size_hint_y=None,
+            height=30,
+            color=(1, 1, 1, 1),
+            font_size='20sp',
+            bold=True,
+            halign='center'
+        )
+        # Para que el texto se centre correctamente
+        titulo.bind(size=lambda s, w: setattr(s, 'text_size', w))
 
-        cambiar_btn = Button(text='Cambiar contraseña', size_hint_y=None, height=40)
-        cambiar_btn.bind(on_release=self.cambiar_contrasena)
+        layout.add_widget(titulo)
 
-        layout.add_widget(Label(text='Modificar Contraseña'))
+        # Inputs
+        self.old_pass_input = MDTextField(
+            hint_text="Contraseña actual",
+            mode="rectangle",
+            password=True
+        )
+        self.new_pass_input = MDTextField(
+            hint_text="Nueva contraseña",
+            mode="rectangle",
+            password=True
+        )
+        self.confirm_pass_input = MDTextField(
+            hint_text="Confirmar nueva contraseña",
+            mode="rectangle",
+            password=True
+        )
+
         layout.add_widget(self.old_pass_input)
         layout.add_widget(self.new_pass_input)
         layout.add_widget(self.confirm_pass_input)
-        layout.add_widget(cambiar_btn)
 
-        self.popup = Popup(title='Cambiar contraseña',
-                           content=layout,
-                           size_hint=(None, None), size=(400, 400),
-                           auto_dismiss=True)
+        # Botones
+        
+        guardar_btn = MDRaisedButton(
+                text='Guardar Cambios',
+                size_hint=(0.4, None),
+                height=45,
+                md_bg_color="blue"
+            )
+        guardar_btn.bind(on_release=self.cambiar_contrasena)
+        
+
+        cancelar_btn = MDFlatButton(
+            text='Cancelar',
+            size_hint=(0.4, None),
+            height=45,
+            text_color="red"
+        )
+        cancelar_btn.bind(on_release=lambda x: self.popup.dismiss())
+
+        button_box = BoxLayout(orientation='horizontal', spacing=20, padding=[0, 10])
+        button_box.add_widget(cancelar_btn)
+        button_box.add_widget(guardar_btn)
+
+        layout.add_widget(button_box)
+
+        # Crear y abrir popup
+        self.popup = ModalView(
+            size_hint=(0.9, None),
+            height=480,  # un poco más alto para el título
+            auto_dismiss=False,
+            background_color=(0, 0, 0, 0.7)
+        )
+        self.popup.add_widget(layout)
         self.popup.open()
+
 
     def cambiar_contrasena(self, instance):
         old_pass = self.old_pass_input.text
@@ -110,7 +216,7 @@ class Configp(Screen):
         confirm_pass = self.confirm_pass_input.text
 
         if new_pass != confirm_pass:
-            self.popup.content.add_widget(Label(text='❌ Las contraseñas no coinciden'))
+            print('❌ Las contraseñas no coinciden')
             return
 
         conn = crear_conexion()
@@ -127,25 +233,21 @@ class Configp(Screen):
             conn.close()
             self.popup.dismiss()
         else:
-            self.popup.content.add_widget(Label(text='❌ Contraseña actual incorrecta'))
+            print('❌ Contraseña actual incorrecta')
 
     def on_enter(self):
         self.obtener_dato_bd()
-        app = App.get_running_app()
+
     def obtener_dato_bd(self):
         conn = crear_conexion()
         cursor = conn.cursor()
         app = App.get_running_app()
         self.rol = getattr(app, 'rol_actual', 2)
-        app = App.get_running_app()
         usuario = app.usuario_actual
-        # Asegúrate de que los nombres de columnas sean correctos y no tengan espacios
-        cursor.execute(
-        "SELECT Nombre, Apellidos, Nombre_Usuario, Correo FROM Usuarios WHERE Nombre_Usuario = ?",
-        (usuario,)
-    )
+        cursor.execute("""
+            SELECT Nombre, Apellidos, Nombre_Usuario, Correo FROM Usuarios WHERE Nombre_Usuario = ?
+        """, (usuario,))
         dato = cursor.fetchone()
-
         conn.close()
 
         if dato:
@@ -161,6 +263,6 @@ class Configp(Screen):
 
     def redirigir_por_rol(self):
         if self.rol == 1:
-            self.manager.current = 'pantalla8'  # Pantalla para administradores
+            self.manager.current = 'pantalla8'
         elif self.rol == 2:
-            self.manager.current = 'pantalla9'  # Pantalla para usuarios normales
+            self.manager.current = 'pantalla9'

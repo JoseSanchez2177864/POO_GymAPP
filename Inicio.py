@@ -1,86 +1,109 @@
+import os
 from kivy.app import App
 from kivy.uix.screenmanager import Screen
-from kivy.uix.modalview import ModalView
-from kivymd.uix.card import MDCard
-from kivymd.uix.label import MDLabel, MDIcon
-from kivymd.uix.button import MDRaisedButton
-from kivy.metrics import dp
+from kivy.clock import Clock
+import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator
+from ConBD import crear_conexion
 from kivy.lang import Builder
 
 Builder.load_file("Inicio.kv")
 
-
 class Iniciop(Screen):
     def on_enter(self):
+        Clock.schedule_once(self.cargar_datos, 0)
+
+    def cargar_datos(self, *args):
         app = App.get_running_app()
-        self.rol = getattr(app, 'rol_actual', 2)
-        usuario = app.usuario_actual
-        es_nuevo = getattr(app, 'es_nuevo', False)
+        self.usuario_id = getattr(app, 'usuario_id', None)
 
-        if not getattr(app, 'bienvenida_mostrada', False):
-            # Mensaje e ícono según rol o estado
-            if es_nuevo:
-                mensaje = f"¡Hola {usuario}, gracias por registrarte!"
-                icon_name = "star"
-                icon_color = (1, 0.8, 0.2, 1)
-            elif self.rol == 1:
-                mensaje = f"Bienvenido, {usuario} (Admin)"
-                icon_name = "account-cog"
-                icon_color = (1, 0.6, 0.2, 1)
-            else:
-                mensaje = f"Bienvenido de nuevo, {usuario}"
-                icon_name = "account"
-                icon_color = (0.6, 0.8, 1, 1)
+        if not self.usuario_id:
+            self.ids.info_ultimo_entrenamiento.text = "Error: Usuario no encontrado."
+            return
 
-            # Construcción del popup personalizado
-            content = MDCard(
-                orientation="vertical",
-                padding=dp(20),
-                spacing=dp(15),
-                size_hint=(None, None),
-                size=(dp(280), dp(220)),
-                md_bg_color=(0.2, 0.2, 0.2, 0.85), 
-                radius=[20, 20, 20, 20]
+        self.mostrar_ultimo_rm(self.usuario_id)
+        self.mostrar_grafica_rm()
+
+    def mostrar_ultimo_rm(self, usuario_id):
+        conn = crear_conexion()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT TOP 1 RM_Calculado, Ejercicio, Numero_Entrenamiento
+            FROM Usuarios_RM
+            WHERE Usuario = ?
+            ORDER BY Numero_Entrenamiento DESC
+        """, (usuario_id,))
+        resultado = cursor.fetchone()
+        conn.close()
+
+        if resultado:
+            rm_calculado, ejercicio_id, num_entrenamiento = resultado
+            ejercicio_nombre = self.obtener_nombre_ejercicio(ejercicio_id)
+            self.ids.info_ultimo_entrenamiento.text = (
+                f"Último RM: {rm_calculado} en ejercicio '{ejercicio_nombre}'\n"
+                f"Entrenamiento N°: {num_entrenamiento}"
             )
+            self.ejercicio_seleccionado = ejercicio_id
+        else:
+            self.ids.info_ultimo_entrenamiento.text = "No hay registros disponibles."
+            self.ids.grafica_rm.source = ""
 
-            icon = MDIcon(
-                icon=icon_name,
-                halign="center",
-                theme_text_color="Custom",
-                text_color=icon_color,
-                font_size="48sp"
-            )
-            label = MDLabel(
-                text=mensaje,
-                halign="center",
-                theme_text_color="Custom",
-                text_color=(1, 1, 1, 1),
-                font_style="Body1"
-            )
-            btn = MDRaisedButton(
-                text="OK",
-                md_bg_color=(0.8, 0.1, 0.1, 1),
-                pos_hint={"center_x": 0.5},
-                on_release=lambda x: popup.dismiss()
-            )
+    def obtener_nombre_ejercicio(self, ejercicio_id):
+        conn = crear_conexion()
+        cursor = conn.cursor()
+        cursor.execute("SELECT Nombre FROM Ejercicios WHERE Id = ?", (ejercicio_id,))
+        resultado = cursor.fetchone()
+        conn.close()
+        return resultado[0] if resultado else "Desconocido"
 
-            content.add_widget(icon)
-            content.add_widget(label)
-            content.add_widget(btn)
+    def mostrar_grafica_rm(self):
+        if not hasattr(self, 'ejercicio_seleccionado') or not self.usuario_id:
+            self.ids.info_ultimo_entrenamiento.text = "Seleccione ejercicio y usuario válido"
+            self.ids.grafica_rm.source = ""
+            return
 
-            popup = ModalView(
-                                size_hint=(None, None),
-                                size=(dp(300), dp(250)),
-                                background_color=(0, 0, 0, 0.7),  # Transparencia igual al otro popup
-                                auto_dismiss=False
-                            )
-            popup.add_widget(content)
-            popup.open()
+        conn = crear_conexion()
+        cursor = conn.cursor()
 
-            app.bienvenida_mostrada = True
+        cursor.execute("""
+            SELECT Numero_Entrenamiento, RM_Calculado
+            FROM Usuarios_RM
+            WHERE Usuario = ? AND Ejercicio = ?
+            ORDER BY Numero_Entrenamiento ASC
+        """, (self.usuario_id, self.ejercicio_seleccionado))
+        resultados = cursor.fetchall()
+        conn.close()
 
-    def cerrar_sesion(self):
-        app = App.get_running_app()
-        app.bienvenida_mostrada = False
-        app.usuario_actual = None
-        app.root.current = 'pantalla1'
+        if not resultados:
+            self.ids.info_ultimo_entrenamiento.text = "No hay registros disponibles."
+            self.ids.grafica_rm.source = ""
+            return
+
+        entrenamientos, rm_values = zip(*resultados)
+        self.graficar_rm(list(entrenamientos), list(rm_values))
+
+    def graficar_rm(self, entrenamientos, rm_values):
+        plt.figure(figsize=(10, 4), dpi=100)
+        ax = plt.gca()
+        ax.set_facecolor((0.1, 0.1, 0.1))
+        ax.grid(True, linestyle="--", color="gray", alpha=0.6)
+        ax.plot(entrenamientos, rm_values, marker="o", color="cyan", linewidth=3)
+        ax.scatter(entrenamientos[-1], rm_values[-1], color="red", s=100)
+
+        ax.set_title("Progreso de RM", color="white")
+        ax.set_xlabel("Número de Entrenamiento", color="white")
+        ax.set_ylabel("RM Calculado", color="white")
+        ax.tick_params(colors="white")
+        ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+
+        plt.tight_layout()
+        ruta_imagen = os.path.join(os.getcwd(), "grafica_rm.png")
+        plt.savefig(ruta_imagen, transparent=True)
+        plt.close()
+
+        if os.path.exists(ruta_imagen):
+            self.ids.grafica_rm.source = ruta_imagen
+            self.ids.grafica_rm.reload()
+        else:
+            self.ids.grafica_rm.source = ""

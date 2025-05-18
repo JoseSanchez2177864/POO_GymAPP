@@ -35,7 +35,8 @@
                     text_color: 1, 1, 1, 1
 
                 MDLabel:
-                    text: "Press de banca\n45 min\n350 cal"
+                    id: info_ultimo_entrenamiento
+                    text: "Información del último entrenamiento aparecerá aquí"
                     font_size: "16sp"
                     halign: "left"
                     theme_text_color: "Custom"
@@ -59,12 +60,12 @@
                 md_bg_color: 0.1, 0.1, 0.1, 1
                 radius: [10, 10, 10, 10]
 
-                MDLabel:
-                    text: "[i]Aquí iría el gráfico[/i]"
-                    font_size: "16sp"
-                    halign: "center"
-                    theme_text_color: "Custom"
-                    text_color: 0.5, 0.5, 0.5, 1
+                Image:
+                    id: grafica_rm
+                    source: ""
+                    allow_stretch: True
+                    keep_ratio: True
+
 
             MDRaisedButton:
                 text: "INICIO RÁPIDO"
@@ -75,6 +76,7 @@
                 text_color: 1, 1, 1, 1
                 pos_hint: {"center_x": 0.5}
                 on_release: app.root.current = 'pantalla11'
+
 
         MDSeparator:
             height: dp(1)

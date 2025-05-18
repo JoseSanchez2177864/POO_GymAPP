@@ -1,9 +1,9 @@
-<StatsAdminp>:
+<InEntrap>:
     FloatLayout:
         md_bg_color: 0.05, 0.05, 0.05, 1
 
         MDLabel:
-            text: "Estadísticas de Usuarios"
+            text: "Sesión de Entrenamiento"
             font_size: "24sp"
             halign: "center"
             theme_text_color: "Custom"
@@ -13,7 +13,7 @@
 
         MDBoxLayout:
             orientation: "vertical"
-            size_hint: 0.9, 0.75
+            size_hint: 0.9, 0.6
             pos_hint: {"center_x": 0.5, "center_y": 0.55}
             spacing: dp(10)
             padding: dp(10)
@@ -23,20 +23,26 @@
             ScrollView:
                 do_scroll_x: False
                 do_scroll_y: True
+
                 MDBoxLayout:
-                    id: label_container
+                    id: ejercicios_container
                     orientation: "vertical"
                     size_hint_y: None
                     height: self.minimum_height
                     spacing: dp(10)
                     padding: dp(10)
+                    md_bg_color: 0.1, 0.1, 0.1, 1
+                    radius: [10, 10, 10, 10]
 
-        MDSeparator:
-            height: dp(1)
-            md_bg_color: 0.4, 0.4, 0.4, 1
-            pos_hint: {"center_x": 0.5, "center_y": 0.11}
+        MDLabel:
+            id: cronometro_label
+            text: "00:00"
+            font_size: "32sp"
+            halign: "center"
+            theme_text_color: "Custom"
+            text_color: 1, 1, 1, 1
+            pos_hint: {"center_x": 0.5, "center_y": 0.24}
 
-        # Barra inferior fija como en CRUDpp
         MDBoxLayout:
             orientation: 'horizontal'
             size_hint_y: None
@@ -46,47 +52,20 @@
             pos_hint: {"center_x": 0.5, "y": 0.02}
 
             MDIconButton:
-                icon: "home"
-                user_font_size: "24sp"
-                md_bg_color: 0.8, 0.1, 0.1, 1
-                theme_text_color: "Custom"
-                text_color: 1, 1, 1, 1
-                on_release: app.root.current = 'pantalla3'
-
-            MDIconButton:
-                icon: "clipboard-list"
-                user_font_size: "24sp"
-                theme_text_color: "Custom"
-                text_color: 1, 1, 1, 1
-                md_bg_color: 0.8, 0.1, 0.1, 1
-                on_release: app.root.current = 'pantalla8'
-
-            Widget:
-                size_hint_x: 0.5
-
-            MDIconButton:
                 icon: "plus"
                 user_font_size: "24sp"
+                md_bg_color: 0.8, 0.1, 0.1, 1
                 theme_text_color: "Custom"
                 text_color: 1, 1, 1, 1
-                md_bg_color: 0.8, 0.1, 0.1, 1
-                on_release: app.root.current = 'pantalla11'
+
 
             Widget:
                 size_hint_x: 0.5
 
             MDIconButton:
-                icon: "chart-bar"
+                icon: "check"
                 user_font_size: "24sp"
+                md_bg_color: 0.1, 0.6, 0.1, 1
                 theme_text_color: "Custom"
                 text_color: 1, 1, 1, 1
-                md_bg_color: 0.8, 0.1, 0.1, 1
-                on_release: app.root.current = 'pantalla10'
-
-            MDIconButton:
-                icon: "account"
-                user_font_size: "24sp"
-                md_bg_color: 0.8, 0.1, 0.1, 1
-                theme_text_color: "Custom"
-                text_color: 1, 1, 1, 1
-                on_release: app.root.current = 'pantalla5'
+                on_release: root.finalizar_entrenamiento()

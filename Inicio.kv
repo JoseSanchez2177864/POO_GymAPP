@@ -17,25 +17,6 @@
                 padding: dp(10)
                 spacing: dp(10)
 
-                MDIconButton:
-                    icon: "menu"
-                    theme_text_color: "Custom"
-                    text_color: 1, 1, 1, 1
-                    user_font_size: "24sp"
-
-                Widget:
-
-                MDIconButton:
-                    icon: "account"
-                    theme_text_color: "Custom"
-                    text_color: 1, 1, 1, 1
-
-                MDIconButton:
-                    icon: "cog"
-                    theme_text_color: "Custom"
-                    text_color: 1, 1, 1, 1
-                    on_release: app.root.current = 'pantalla5'
-
             MDBoxLayout:
                 orientation: 'vertical'
                 size_hint_y: None
@@ -46,7 +27,7 @@
                 radius: [10, 10, 10, 10]
 
                 MDLabel:
-                    text: "💪  [b]Último entrenamiento[/b]"
+                    text: "  [b]Último entrenamiento[/b]"
                     markup: True
                     font_size: "20sp"
                     halign: "left"
@@ -93,6 +74,7 @@
                 md_bg_color: 0.2, 0.6, 0.2, 1
                 text_color: 1, 1, 1, 1
                 pos_hint: {"center_x": 0.5}
+                on_release: app.root.current = 'pantalla11'
 
         MDSeparator:
             height: dp(1)
@@ -132,6 +114,7 @@
                 md_bg_color: 0.8, 0.1, 0.1, 1
                 theme_text_color: "Custom"
                 text_color: 1, 1, 1, 1
+                on_release: app.root.current = 'pantalla11'
 
             Widget:
                 size_hint_x: 0.5

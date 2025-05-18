@@ -14,6 +14,7 @@ from CRUDu import CRUDup
 from CRUDp import CRUDpp
 from Planes import Planesp
 from StatsAdmin import StatsAdminp
+from InEntra import InEntrap
 import kivymd
 print("Hola aquí esta la version:",kivymd.__version__)
 
@@ -36,6 +37,8 @@ class GymApp(MDApp):
         sm.add_widget(CRUDpp(name='pantalla8'))
         sm.add_widget(Planesp(name='pantalla9'))
         sm.add_widget(StatsAdminp(name='pantalla10'))
+        sm.add_widget(InEntrap(name='pantalla11'))
+
         sm.current = 'pantalla1'
         return sm
     

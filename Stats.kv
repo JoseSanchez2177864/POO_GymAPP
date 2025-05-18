@@ -21,8 +21,6 @@
             disabled: True
             md_bg_color: 0, 1, 0, 1  # verde por defecto
 
-
-
         MDBoxLayout:
             orientation: "vertical"
             size_hint: 0.95, 0.75
@@ -36,59 +34,68 @@
                 id: campo_ejercicio
                 hint_text: "Selecciona un ejercicio"
                 mode: "rectangle"
-                readonly: True  # para que no se pueda escribir
+                readonly: True
                 on_focus:
                     if self.focus: root.menu.open()
                 text: root.ejercicio_seleccionado
+                opacity: 1  # Visible inicialmente
 
-            ScrollView:
+            StackLayout:
+                id: stack_vista
                 size_hint_y: None
-                height: dp(230)
-                do_scroll_x: True
-                do_scroll_y: False
-                bar_width: dp(4)
+                height: dp(240)  # Altura fija para ambos
+                pos_hint: {"center_x": 0.5}
+
+                ScrollView:
+                    id: contenedor_scroll
+                    size_hint: 1, None
+                    height: dp(220)
+                    opacity: 1  # Visible por defecto
+
+                    BoxLayout:
+                        orientation: 'horizontal'
+                        size_hint_x: None
+                        width: self.minimum_width
+                        height: dp(220)
+                        padding: dp(10)
+
+                        Image:
+                            id: grafica_rm
+                            size_hint: None, None
+                            size: dp(680), dp(220)
+                            allow_stretch: True
+                            keep_ratio: True
+                            opacity: 1
 
                 BoxLayout:
-                    orientation: 'horizontal'
-                    size_hint_x: None
-                    width: dp(700)
+                    size_hint: 1, None
                     height: dp(220)
-
-                    Image:
-                        id: grafica_rm
-                        size_hint: None, None
-                        size: dp(680), dp(220)
-                        allow_stretch: True
-                        keep_ratio: True
-                        opacity: 1
+                    pos_hint: {"center_x": 0.5}
 
                     Image:
                         id: imagen_musculos
-                        source: 'musculos_base.png'
+                        source: 'musculos_base.png'  # Verifica la ruta
                         size_hint: None, None
                         size: dp(680), dp(220)
-                        pos_hint: {"center_y": 0.5}
                         allow_stretch: True
                         keep_ratio: True
-                        opacity: 0
+                        opacity: 0  # Oculta por defecto
 
-            MDLabel:
+
+
+            Label:
                 id: info_ultimo_entrenamiento
-                text: ""
-                font_size: "14sp"
+                text: "Último entrenamiento: - con RM: -"
+                font_size: "16sp"
                 halign: "center"
-                theme_text_color: "Custom"
-                text_color: 1, 1, 1, 1
-                size_hint_y: None
-                height: dp(20)
-
+                color: (1, 1, 1, 1)
+                opacity: 1  # Visible por defecto
 
             MDRaisedButton:
                 text: "Cambiar Vista"
-                size_hint: None, None
-                size: dp(150), dp(40)
-                pos_hint: {"center_x": 0.5}
                 on_release: root.cambiar_vista()
+                md_bg_color: (1, 0, 0, 1)
+                pos_hint: {"center_x": 0.5}
 
         MDSeparator:
             height: dp(1)
@@ -110,7 +117,7 @@
                 theme_text_color: "Custom"
                 text_color: 1, 1, 1, 1
                 on_release: app.root.current = 'pantalla3'
-                
+                    
             MDIconButton:
                 icon: "clipboard-list"
                 user_font_size: "24sp"
@@ -128,6 +135,7 @@
                 md_bg_color: 0.8, 0.1, 0.1, 1
                 theme_text_color: "Custom"
                 text_color: 1, 1, 1, 1
+                on_release: app.root.current = 'pantalla11'
 
             Widget:
                 size_hint_x: 0.5
@@ -147,4 +155,3 @@
                 theme_text_color: "Custom"
                 text_color: 1, 1, 1, 1
                 on_release: app.root.current = 'pantalla5'
-               

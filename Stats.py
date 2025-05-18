@@ -4,6 +4,7 @@ from kivymd.uix.menu import MDDropdownMenu
 from kivy.properties import NumericProperty, StringProperty, ListProperty
 from ConBD import crear_conexion
 from matplotlib.ticker import MaxNLocator
+from kivy.metrics import dp
 import matplotlib.pyplot as plt
 from kivy.lang import Builder
 Builder.load_file("Stats.kv")
@@ -145,16 +146,20 @@ class Statsp(Screen):
         self.ids.campo_ejercicio.text = ""
         self.ids.info_ultimo_entrenamiento.text = ""
         self.ids.grafica_rm.source = ""
+
     def cambiar_vista(self):
-        if self.ids.grafica_rm.opacity == 1:
-            self.ids.grafica_rm.opacity = 0
+        if self.ids.imagen_musculos.opacity == 0:
+            # Mostrar imagen de músculos
             self.ids.imagen_musculos.opacity = 1
+            self.ids.contenedor_scroll.opacity = 0
             self.ids.campo_ejercicio.opacity = 0
-            self.ids.campo_ejercicio.disabled = True
             self.ids.info_ultimo_entrenamiento.opacity = 0
         else:
-            self.ids.grafica_rm.opacity = 1
+            # Mostrar gráfica y controles
             self.ids.imagen_musculos.opacity = 0
+            self.ids.contenedor_scroll.opacity = 1
             self.ids.campo_ejercicio.opacity = 1
-            self.ids.campo_ejercicio.disabled = False
             self.ids.info_ultimo_entrenamiento.opacity = 1
+
+
+

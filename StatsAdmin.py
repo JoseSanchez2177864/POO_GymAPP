@@ -76,8 +76,26 @@ class StatsAdminp(Screen):
 
     def ver_estadisticas_usuario(self, usuario_id):
         app = App.get_running_app()
-        app.usuario_actual = usuario_id
-        app.root.current = 'pantalla6'
+        app.usuario_actual_id = usuario_id  # guardamos el ID seleccionado en app
+        statsp_screen = app.root.get_screen('pantalla6')
+        statsp_screen.usuario_id = usuario_id
+        statsp_screen.limpiar_campos()
+
+        # Reseteamos usuario en Statsp para forzar carga de ese usuario:
+        statsp_screen = app.root.get_screen('pantalla6')  # o el nombre correcto de la pantalla
+        statsp_screen.usuario_id = usuario_id
+        statsp_screen.ejercicio_seleccionado = ""
+        statsp_screen.ids.campo_ejercicio.text = ""
+        statsp_screen.ids.info_ultimo_entrenamiento.text = ""
+        statsp_screen.ids.grafica_rm.source = ""
+
+        # Supongamos que estás en statsadmin y quieres ir a Statsp
+        app = App.get_running_app()
+        statsp_screen = app.root.get_screen('pantalla6')  # obtienes la pantalla Statsp
+        statsp_screen.rol = 1  # le dices que el rol es admin
+        app.root.current = 'pantalla6'  # cambias a esa pantalla
+
+
 
 
 class SimpleSeparator(Widget):

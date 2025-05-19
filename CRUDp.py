@@ -1,4 +1,5 @@
 from kivy.app import App
+from kivymd.app import MDApp
 from kivy.uix.screenmanager import Screen
 from kivymd.uix.textfield import MDTextField
 from kivy.uix.modalview import ModalView
@@ -14,6 +15,9 @@ Builder.load_file("CRUDp.kv")
 
 class CRUDpp(Screen):
     def on_enter(self, *args):
+        app = MDApp.get_running_app()
+        if getattr(app, 'desde_login', False):
+            app.desde_login = False
         self.load_users()
 
     def load_users(self):

@@ -1,4 +1,5 @@
 from kivy.app import App
+from kivymd.app import MDApp
 from kivy.uix.screenmanager import Screen
 from kivymd.uix.menu import MDDropdownMenu
 from kivy.properties import NumericProperty, StringProperty, ListProperty
@@ -10,6 +11,11 @@ from kivy.lang import Builder
 Builder.load_file("Stats.kv")
 
 class Statsp(Screen):
+    def on_enter(self):
+        app = MDApp.get_running_app()
+        if getattr(app, 'desde_login', False):
+            app.desde_login = False 
+            
     def limpiar_campos(self):
         self.ids.campo_ejercicio.text = ""
         self.ids.info_ultimo_entrenamiento.text = ""

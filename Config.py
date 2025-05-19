@@ -23,6 +23,13 @@ class Configp(Screen):
     nombreusuario = StringProperty()
     correo = StringProperty()
 
+    def on_enter(Self):
+        app = MDApp.get_running_app()
+        if getattr(app, 'desde_login', False):
+            app.desde_login = False
+
+
+
     def mostrar_popup_info(self):
 # Layout principal
         layout = BoxLayout(orientation='vertical', padding=20, spacing=15)

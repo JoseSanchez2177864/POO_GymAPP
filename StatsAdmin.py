@@ -1,4 +1,5 @@
 from kivy.app import App
+from kivymd.app import MDApp
 from kivy.uix.screenmanager import Screen
 from kivymd.uix.button import MDRaisedButton
 from kivy.uix.boxlayout import BoxLayout
@@ -12,8 +13,12 @@ from kivy.lang import Builder
 Builder.load_file("StatsAdmin.kv")
 
 class StatsAdminp(Screen):
+
     def on_enter(self, *args):
         self.load_users()
+        app = MDApp.get_running_app()
+        if getattr(app, 'desde_login', False):
+            app.desde_login = False 
 
     def load_users(self):
         self.ids.label_container.clear_widgets()

@@ -1,4 +1,5 @@
 from kivy.app import App
+from kivymd.app import MDApp
 from kivymd.uix.card import MDCard
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivy.uix.widget import Widget
@@ -17,8 +18,12 @@ from ConBD import crear_conexion
 Builder.load_file("CRUDu.kv")
 
 class CRUDup(Screen):
+ 
     def on_enter(self, *args):
         self.load_users()
+        app = MDApp.get_running_app()
+        if getattr(app, 'desde_login', False):
+            app.desde_login = False 
 
     def load_users(self):
         self.ids.label_container.clear_widgets()

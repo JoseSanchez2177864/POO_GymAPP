@@ -1,4 +1,5 @@
 from kivy.app import App
+from kivymd.app import MDApp
 from kivymd.uix.button import MDRaisedButton
 from kivymd.uix.card import MDCard
 from kivymd.uix.label import MDLabel
@@ -16,9 +17,11 @@ Builder.load_file("Planes.kv")
 
 class Planesp(Screen):
     rol = 2  # ejemplo, cambia según tu lógica
-
     def on_enter(self, *args):
         self.load_planes()
+        app = MDApp.get_running_app()
+        if getattr(app, 'desde_login', False):
+            app.desde_login = False 
 
     def load_planes(self):
         self.ids.planes_container.clear_widgets()

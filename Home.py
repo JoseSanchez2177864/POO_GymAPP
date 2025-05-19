@@ -15,14 +15,18 @@ from CRUDp import CRUDpp
 from Planes import Planesp
 from StatsAdmin import StatsAdminp
 from InEntra import InEntrap
+from Ej1Entra import MenuScreen, ExerciseScreen, WorkoutScreen
+
 import kivymd
 print("Hola aquí esta la version:",kivymd.__version__)
 
 class GymApp(MDApp):
+
     def build(self):
         self.theme_cls.primary_palette = "Red"
         self.theme_cls.theme_style = "Dark"
-
+        self.desde_login = False
+        self.pantalla_origen = ""
         # Cargar archivos .kv después de inicializar la app
         Builder.load_file("InS.kv")
         Builder.load_file("CrS.kv")
@@ -38,6 +42,9 @@ class GymApp(MDApp):
         sm.add_widget(Planesp(name='pantalla9'))
         sm.add_widget(StatsAdminp(name='pantalla10'))
         sm.add_widget(InEntrap(name='pantalla11'))
+        sm.add_widget(MenuScreen(name='menu'))         # pantalla13
+        sm.add_widget(ExerciseScreen(name='exercises'))     # pantalla15
+        sm.add_widget(WorkoutScreen(name='workout')) 
 
         sm.current = 'pantalla1'
         return sm
@@ -52,7 +59,8 @@ class GymApp(MDApp):
             self.root.current = 'pantalla10'  # Pantalla para administradores
         elif self.rol_actual == 2:
             self.root.current = 'pantalla6'
-    
+    def cambiar_pantalla(self, nombre_pantalla):
+        self.root.current = nombre_pantalla
 
 if __name__ == '__main__':
     GymApp().run()

@@ -1,5 +1,6 @@
 import bcrypt
 from kivy.app import App
+from kivymd.app import MDApp
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.lang import Builder
 from kivy.uix.popup import Popup

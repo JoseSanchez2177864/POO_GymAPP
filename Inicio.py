@@ -1,5 +1,6 @@
 import os
 from kivy.app import App
+from kivymd.app import MDApp
 from kivy.uix.screenmanager import Screen
 from kivy.clock import Clock
 import matplotlib.pyplot as plt
@@ -11,6 +12,9 @@ Builder.load_file("Inicio.kv")
 
 class Iniciop(Screen):
     def on_enter(self):
+        app = MDApp.get_running_app()
+        app.desde_login = False # Se reinicia la bandera
+
         Clock.schedule_once(self.cargar_datos, 0)
 
     def cargar_datos(self, *args):

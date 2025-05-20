@@ -1,10 +1,16 @@
 from kivy.app import App
+import os
 from kivymd.app import MDApp
 from kivy.uix.screenmanager import Screen
+from datetime import datetime
+from reportlab.lib import colors
+from reportlab.platypus import Table, TableStyle
 from kivymd.uix.menu import MDDropdownMenu
 from kivy.properties import NumericProperty, StringProperty, ListProperty
 from ConBD import crear_conexion
 from matplotlib.ticker import MaxNLocator
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
 from kivy.metrics import dp
 import matplotlib.pyplot as plt
 from kivy.lang import Builder
@@ -152,6 +158,135 @@ class Statsp(Screen):
         self.ids.campo_ejercicio.text = ""
         self.ids.info_ultimo_entrenamiento.text = ""
         self.ids.grafica_rm.source = ""
+    
+    def guardar_grafica_como_imagen(self):
+        if not self.ejercicio_seleccionado or not self.usuario_id:
+            print("No hay datos para generar gráfica.")
+            return False, []
+
+        conn = crear_conexion()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT ur.Numero_Entrenamiento, ur.RM_Calculado
+            FROM Usuarios_RM ur
+            JOIN Ejercicios e ON ur.Ejercicio = e.Id
+            WHERE ur.Usuario = ? AND e.Nombre = ?
+            ORDER BY ur.Numero_Entrenamiento ASC
+        """, (self.usuario_id, self.ejercicio_seleccionado))
+        resultados = cursor.fetchall()
+        conn.close()
+
+        if not resultados:
+            print("No hay resultados para graficar.")
+            return False, []
+
+        entrenamientos, rm_values = zip(*resultados)
+        plt.figure(figsize=(10, 4), dpi=100)
+        ax = plt.gca()
+        ax.plot(entrenamientos, rm_values, marker="o", color="black", linewidth=3)
+        ax.set_title("Progreso de RM")
+        ax.set_xlabel("Número de Entrenamiento")
+        ax.set_ylabel("RM Calculado")
+        ax.grid(True, linestyle="--", alpha=0.7)
+        ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+        plt.tight_layout()
+        plt.savefig("grafica.png")
+        plt.close()
+
+        return True, resultados
+
+    def generar_pdf_con_grafica(self, resultados, nombre_archivo="grafica.pdf"):
+        from reportlab.pdfgen import canvas
+        from reportlab.lib.pagesizes import letter
+        from reportlab.platypus import Table, TableStyle
+        from reportlab.lib import colors
+        from datetime import datetime
+
+        # Obtener el nombre del usuario mostrado actualmente
+        conn = crear_conexion()
+        cursor = conn.cursor()
+        cursor.execute("SELECT Nombre_Usuario FROM Usuarios WHERE Id = ?", (self.usuario_id,))
+        resultado = cursor.fetchone()
+        conn.close()
+        nombre_usuario = resultado[0] if resultado else "Desconocido"
+
+        c = canvas.Canvas(nombre_archivo, pagesize=letter)
+
+        # Encabezado
+        c.setFont("Helvetica-Bold", 16)
+        c.drawString(50, 770, "Reporte de Progreso del Usuario")
+
+        c.setFont("Helvetica", 12)
+        c.drawString(50, 750, f"Usuario: {nombre_usuario}")
+        c.drawString(50, 735, f"Ejercicio: {self.ejercicio_seleccionado}")
+        c.drawString(50, 720, f"Fecha: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
+
+        # Imagen de la gráfica
+        c.drawImage("grafica.png", 50, 450, width=480, height=250)
+
+        # Tabla de resultados
+        data = [["Entrenamiento", "RM"]] + list(resultados)
+
+        table = Table(data, colWidths=[120, 100])
+        table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.gray),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ]))
+
+        # Ajustar posición vertical de la tabla
+        height_offset = 200 - (len(data) * 15)
+        if height_offset < 50:
+            height_offset = 50
+
+        table.wrapOn(c, 50, 0)
+        table.drawOn(c, 50, 80)  # Más abajo en la hoja
+
+
+        c.save()
+
+
+    def abrir_pdf(self, nombre_archivo="grafica.pdf"):
+        try:
+            if os.name == 'nt':  # Windows
+                os.startfile(nombre_archivo)
+            elif os.name == 'posix':
+                import subprocess
+                subprocess.Popen(["xdg-open", nombre_archivo])  # Linux
+            elif sys.platform == 'darwin':  # macOS
+                import subprocess
+                subprocess.Popen(["open", nombre_archivo])
+        except Exception as e:
+            print("Error al abrir el PDF:", e)
+
+    def imprimir_grafica(self):
+        if not self.ejercicio_seleccionado or not self.usuario_id:
+            return
+
+        conn = crear_conexion()
+        cursor = conn.cursor()
+        cursor.execute(
+            """
+            SELECT ur.Numero_Entrenamiento, ur.RM_Calculado
+            FROM Usuarios_RM ur
+            JOIN Ejercicios e ON ur.Ejercicio = e.Id
+            WHERE ur.Usuario = ? AND e.Nombre = ?
+            ORDER BY ur.Numero_Entrenamiento ASC
+            """,
+            (self.usuario_id, self.ejercicio_seleccionado),
+        )
+        resultados = cursor.fetchall()
+        conn.close()
+
+        self.graficar_rm(*zip(*resultados))  # Asegúrate de que la gráfica se genere
+        self.generar_pdf_con_grafica(resultados)
+        import os
+        os.startfile("grafica.pdf")  # Para abrir automáticamente (solo en Windows)
+
+
 
     def cambiar_vista(self):
         if self.ids.imagen_musculos.opacity == 0:

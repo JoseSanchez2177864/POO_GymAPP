@@ -8,14 +8,23 @@ from matplotlib.ticker import MaxNLocator
 from ConBD import crear_conexion
 from kivy.lang import Builder
 
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.button import MDRaisedButton
+from kivymd.uix.textfield import MDTextField
+from kivymd.uix.menu import MDDropdownMenu
+from kivymd.uix.boxlayout import MDBoxLayout
+
 Builder.load_file("Inicio.kv")
 
 class Iniciop(Screen):
     def on_enter(self):
         app = MDApp.get_running_app()
-        app.desde_login = False # Se reinicia la bandera
+        app.desde_login = False
 
         Clock.schedule_once(self.cargar_datos, 0)
+
+        if app.rol_actual == 1:
+            self.mostrar_boton_añadir()
 
     def cargar_datos(self, *args):
         app = App.get_running_app()
@@ -111,3 +120,151 @@ class Iniciop(Screen):
             self.ids.grafica_rm.reload()
         else:
             self.ids.grafica_rm.source = ""
+
+    def mostrar_boton_añadir(self):
+        # Verifica si ya se ha creado el botón previamente
+        if hasattr(self, 'boton_añadir') and self.boton_añadir in self.ids.box_contenido.children:
+            return
+
+        self.boton_añadir = MDRaisedButton(
+            text="Añadir Ejercicio",
+            size_hint=(1, None),
+            height=50,
+            md_bg_color=(0.2, 0.4, 0.7, 1),
+            on_release=self.mostrar_popup_añadir_ejercicio
+        )
+        # Lo colocamos arriba (inicio del layout vertical)
+        self.ids.box_contenido.add_widget(self.boton_añadir, index=len(self.ids.box_contenido.children))
+
+    def mostrar_popup_añadir_ejercicio(self, *args):
+        from kivy.uix.boxlayout import BoxLayout
+        from kivy.uix.label import Label
+        from kivy.uix.widget import Widget
+        from kivymd.uix.textfield import MDTextField
+        from kivymd.uix.button import MDRaisedButton, MDFlatButton
+        from kivy.uix.modalview import ModalView
+
+        layout = BoxLayout(orientation='vertical', padding=20, spacing=15)
+
+        titulo = Label(
+            text="Añadir Ejercicio",
+            size_hint_y=None,
+            height=30,
+            color=(1, 1, 1, 1),
+            font_size='20sp',
+            bold=True,
+            halign='center'
+        )
+        titulo.bind(size=lambda s, w: setattr(s, 'text_size', w))
+        layout.add_widget(titulo)
+
+        self.input_nombre_ejercicio = MDTextField(
+            hint_text='Nombre del ejercicio',
+            mode='rectangle'
+        )
+        self.input_descripcion_ejercicio = MDTextField(
+            hint_text='Descripción',
+            mode='rectangle'
+        )
+        self.input_musculo_ejercicio = MDTextField(
+            hint_text='Músculo trabajado',
+            mode='rectangle'
+        )
+
+        layout.add_widget(self.input_nombre_ejercicio)
+        layout.add_widget(self.input_descripcion_ejercicio)
+        layout.add_widget(self.input_musculo_ejercicio)
+
+        layout.add_widget(Widget(size_hint_y=None, height=40))
+
+        guardar_btn = MDRaisedButton(
+            text='Guardar',
+            size_hint=(0.4, None),
+            height=45,
+            md_bg_color="green"
+        )
+        guardar_btn.bind(on_release=self.guardar_ejercicio)
+
+        cancelar_btn = MDFlatButton(
+            text='Cancelar',
+            size_hint=(0.4, None),
+            height=45,
+            text_color="red"
+        )
+        cancelar_btn.bind(on_release=lambda x: self.popup.dismiss())
+
+        button_box = BoxLayout(orientation='horizontal', spacing=20, padding=[0, 10])
+        button_box.add_widget(cancelar_btn)
+        button_box.add_widget(guardar_btn)
+
+        layout.add_widget(button_box)
+
+        self.popup = ModalView(
+            size_hint=(0.9, None),
+            height=480,
+            auto_dismiss=False,
+            background_color=(0, 0, 0, 0.7)
+        )
+        conn = crear_conexion()
+        cursor = conn.cursor()
+        cursor.execute("SELECT Id, Nombre FROM Musculos")
+        musculos = cursor.fetchall()
+        conn.close()
+
+        menu_items = [{
+            "text": descripcion,
+            "viewclass": "OneLineListItem",
+            "on_release": lambda x=descripcion, y=id_: self.set_musculo(x, y)
+        } for id_, descripcion in musculos]
+
+        self.menu_musculos = MDDropdownMenu(
+            caller=self.input_musculo_ejercicio,
+            items=menu_items,
+            width_mult=4
+        )
+
+        self.input_musculo_ejercicio.bind(
+            focus=lambda instance, value: self.menu_musculos.open() if value else None
+        )
+
+        self.popup.add_widget(layout)
+        self.popup.open()
+
+    def set_musculo(self, nombre, musculo_id):
+        self.input_musculo_ejercicio.text = nombre
+        self.musculo_id_seleccionado = musculo_id
+        self.menu_musculos.dismiss()
+
+    def guardar_ejercicio(self, *args):
+        nombre = self.input_nombre_ejercicio.text.strip()
+        descripcion = self.input_descripcion_ejercicio.text.strip()
+        musculo_id = getattr(self, 'musculo_id_seleccionado', None)
+
+        if not nombre or not descripcion or musculo_id is None:
+            print("Faltan campos obligatorios.")
+            return
+
+        try:
+            conn = crear_conexion()
+            cursor = conn.cursor()
+
+            cursor.execute("""
+                INSERT INTO Ejercicios (Nombre, Descripcion)
+                OUTPUT INSERTED.Id
+                VALUES (?, ?)
+            """, (nombre, descripcion))
+            ejercicio_id = cursor.fetchone()[0]
+
+            cursor.execute("""
+                INSERT INTO Ejercicios_Musculos (Ejercicio, Musculo)
+                VALUES (?, ?)
+            """, (ejercicio_id, musculo_id))
+
+            conn.commit()
+            conn.close()
+            self.popup.dismiss()
+            print("Ejercicio creado exitosamente.")
+        except Exception as e:
+            print(f"Error al guardar ejercicio: {e}")
+
+

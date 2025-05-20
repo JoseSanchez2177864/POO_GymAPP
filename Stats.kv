@@ -1,7 +1,7 @@
 <Statsp>:
     FloatLayout:
         md_bg_color: 0.05, 0.05, 0.05, 1
-
+    
         MDLabel:
             text: "Progreso de RM"
             font_size: "20sp"
@@ -20,6 +20,8 @@
             opacity: 0
             disabled: True
             md_bg_color: 0, 1, 0, 1  # verde por defecto
+            on_release: root.imprimir_grafica()
+
 
         MDBoxLayout:
             orientation: "vertical"

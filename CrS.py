@@ -101,10 +101,10 @@ class CrSp(Screen):
 
             # Insertar usuario con OUTPUT para obtener Id insertado
             cursor.execute("""
-                INSERT INTO Usuarios (Nombre, Apellidos, Nombre_Usuario, Correo, Contraseña, Peso, Planes)
+                INSERT INTO Usuarios (Nombre, Apellidos, Nombre_Usuario, Correo, Contraseña, Peso)
                 OUTPUT INSERTED.Id
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            """, (nombre, apellidos, nombre_usuario, correo, contrasena, peso, plan_por_defecto))
+                VALUES (?, ?, ?, ?, ?, ?)
+            """, (nombre, apellidos, nombre_usuario, correo, contrasena, peso))
 
             usuario_id = cursor.fetchone()
             if usuario_id is None:
@@ -122,8 +122,11 @@ class CrSp(Screen):
             print(f"✅ Usuario (ID: {usuario_id}) y rol registrados correctamente.")
 
             # Guardar el usuario creado en la app para sesión
-            App.get_running_app().usuario_actual = nombre_usuario
-            App.get_running_app().es_nuevo = True
+            app = App.get_running_app()
+            app.usuario_id = usuario_id       # Guardar ID del usuario
+            app.usuario_actual = nombre_usuario
+            app.rol_actual = rol_por_defecto
+            app.es_nuevo = True
             self.manager.current = "pantalla3"
 
         except Exception as e:

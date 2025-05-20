@@ -273,4 +273,13 @@ class Configp(Screen):
             self.manager.current = 'pantalla8'
         elif self.rol == 2:
             self.manager.current = 'pantalla9'
+
+    def cerrar_sesion(self):
+        app = App.get_running_app()
+        # Limpiar las variables de sesión
+        app.usuario_id = None
+        app.usuario_actual = None
+        app.rol_actual = None
+        app.es_nuevo = False
+        self.manager.current = "pantalla1" 
     

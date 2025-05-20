@@ -5,31 +5,51 @@ from kivymd.uix.textfield import MDTextField
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivy.uix.image import Image
 from kivymd.uix.screen import MDScreen
-from kivy.uix.screenmanager import ScreenManager, Screen
+
 from ConBD import crear_conexion
 
 
-def obtener_ejercicios_por_grupo(grupo_muscular):
+def obtener_grupos_musculares():
     conexion = crear_conexion()
     cursor = conexion.cursor()
+    cursor.execute("SELECT DISTINCT Nombre FROM Musculos")
+    resultados = cursor.fetchall()
+    conexion.close()
+    return [row[0] for row in resultados]
+
+
+def obtener_ejercicios_por_grupo(nombre_grupo_muscular):
+    conexion = crear_conexion()
+    cursor = conexion.cursor()
+
+    cursor.execute("SELECT ID FROM Musculos WHERE Nombre = ?", (nombre_grupo_muscular,))
+    id_musculo = cursor.fetchone()
+    if not id_musculo:
+        conexion.close()
+        return []
+
+    id_musculo = id_musculo[0]
+
     consulta = """
         SELECT DISTINCT E.Nombre
         FROM Ejercicios E
         JOIN Ejercicios_Musculos EM ON E.ID = EM.Ejercicio
-        WHERE EM.Grupo_Muscular = ?
+        WHERE EM.Musculo = ?
     """
-    cursor.execute(consulta, (grupo_muscular,))  # Ojo: pasar parámetros como tupla
+    cursor.execute(consulta, (id_musculo,))
     resultados = cursor.fetchall()
     conexion.close()
     return [row[0] for row in resultados]
 
 
 class MenuScreen(MDScreen):
-    def on_enter(Self):
+    def on_pre_enter(self):
         app = MDApp.get_running_app()
         app.desde_login = True
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
         self.layout = MDBoxLayout(orientation='vertical', padding=20, spacing=15)
         self.add_widget(self.layout)
 
@@ -41,7 +61,7 @@ class MenuScreen(MDScreen):
             font_style='H5'
         ))
 
-        grupos = ['Pecho', 'Espalda', 'Pierna', 'Hombro', 'Brazo']
+        grupos = obtener_grupos_musculares()
 
         for grupo in grupos:
             btn = MDRaisedButton(
@@ -105,9 +125,10 @@ class ExerciseScreen(MDScreen):
 
 
 class WorkoutScreen(MDScreen):
-    def on_enter(Self):
+    def on_pre_enter(self):
         app = MDApp.get_running_app()
         app.desde_login = True
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.layout = MDBoxLayout(orientation='vertical', padding=20, spacing=10)
@@ -141,14 +162,8 @@ class WorkoutScreen(MDScreen):
         self.series_input.text = ''
         self.series_container.clear_widgets()
         self.recommend_label.text = f"Series recomendadas para {exercise_name}:"
-
-        if exercise_name == 'Press banca':
-            self.image1.source = 'assets/Pectoral-mayor.gif'
-            self.image2.source = 'assets/press_banca.gif'
-        else:
-            self.image1.source = 'assets/default_muscle.png'
-            self.image2.source = 'assets/default_exercise.gif'
-
+        self.image1.source = 'RutinaMusculos/Pecho/Pectoral Mayor/Pectoral-mayor.gif'
+        self.image2.source = 'assets/press_banca.gif'
         self.image1.reload()
         self.image2.reload()
 
@@ -171,45 +186,64 @@ class WorkoutScreen(MDScreen):
 
     def guardar_series_en_bd(self, instance):
         try:
+            # Validar que todos los campos estén llenos
+            for peso_input, reps_input in self.series_inputs:
+                if not peso_input.text.strip() or not reps_input.text.strip():
+                    from kivymd.uix.dialog import MDDialog
+                    from kivymd.uix.button import MDFlatButton
+
+                    def cerrar_dialogo(obj):
+                        dialog.dismiss()
+
+                    dialog = MDDialog(
+                        text="Por favor, completa todos los campos de peso y repeticiones.",
+                        buttons=[MDFlatButton(text="OK", on_release=cerrar_dialogo)]
+                    )
+                    dialog.open()
+                    return
+
             conexion = crear_conexion()
             cursor = conexion.cursor()
 
-            # Obtener ID del ejercicio
+            # Obtener el ID del ejercicio
             cursor.execute("SELECT ID FROM Ejercicios WHERE Nombre = ?", (self.exercise_name,))
             ejercicio_id = cursor.fetchone()[0]
 
-            # Obtener ID del usuario y número de sesión actual
+            # Obtener el ID del usuario
             usuario_id = MDApp.get_running_app().usuario_id
 
-            cursor.execute("SELECT MAX(Numero_de_Sesion) FROM Sesiones WHERE Usuario = ?", (usuario_id,))
-            numero_sesion = cursor.fetchone()[0]
+            # Obtener el ID de la sesión más reciente (la que se acaba de crear)
+            cursor.execute("""
+                SELECT TOP 1 Id, Numero_de_Sesion 
+                FROM Sesiones 
+                WHERE Usuario = ? 
+                ORDER BY Fecha DESC, Id DESC
+            """, (usuario_id,))
+            resultado = cursor.fetchone()
+            if not resultado:
+                raise Exception("No se encontró una sesión válida para el usuario.")
 
-            Numero_Entrenamiento = numero_sesion
+            sesion_id, numero_sesion = resultado
 
             rm_max = 0
             serie_rm_max = 0
 
+            # Insertar las series en la base de datos
             for i, (peso_input, reps_input) in enumerate(self.series_inputs):
-                peso = peso_input.text.strip()
-                repeticiones = reps_input.text.strip()
-                if peso and repeticiones:
-                    peso = float(peso)
-                    repeticiones = int(repeticiones)
-                    rm = round(peso * (1 + repeticiones / 30), 2)
+                peso = float(peso_input.text.strip())
+                repeticiones = int(reps_input.text.strip())
+                rm = round(peso * (1 + repeticiones / 30), 2)
 
-                    if rm > rm_max:
-                        rm_max = rm
-                        serie_rm_max = i + 1
+                if rm > rm_max:
+                    rm_max = rm
+                    serie_rm_max = i + 1
+                print(numero_sesion)
+                cursor.execute("""
+                    INSERT INTO Series (Ejercicio, Numero, Peso, Repeticiones, Numero_Entrenamiento, Sesion, Usuario)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                """, (ejercicio_id, i + 1, peso, repeticiones, numero_sesion, numero_sesion, usuario_id))
 
-                    cursor.execute("""
-                        INSERT INTO Series (Ejercicio, Numero, Peso, Repeticiones, Numero_Entrenamiento, Sesion)
-                        VALUES (?, ?, ?, ?, ?, ?)
-                    """, (ejercicio_id, i + 1, peso, repeticiones, Numero_Entrenamiento, numero_sesion))
-
-            # No necesitas esto para SCOPE_IDENTITY si no lo usas:
-            # cursor.execute("SELECT SCOPE_IDENTITY()")
-            # serie_id = cursor.fetchone()[0]
-
+            # Obtener el RM anterior
             cursor.execute("""
                 SELECT TOP 1 RM_Calculado FROM Usuarios_RM 
                 WHERE Usuario = ? AND Ejercicio = ?
@@ -218,24 +252,23 @@ class WorkoutScreen(MDScreen):
             resultado = cursor.fetchone()
             rm_anterior = resultado[0] if resultado else None
 
-            if rm_anterior is None:
-                estado_rm = "Sobresaliente"
-            elif rm_max > rm_anterior:
+            # Determinar el estado del nuevo RM
+            if rm_anterior is None or rm_max > rm_anterior:
                 estado_rm = "Sobresaliente"
             elif rm_max < rm_anterior:
                 estado_rm = "Menos"
             else:
                 estado_rm = "Constante"
 
+            # Insertar el nuevo RM
             cursor.execute("""
                 INSERT INTO Usuarios_RM (Usuario, Ejercicio, Numero_Entrenamiento, Numero_de_Serie, Numero_de_Sesion, RM_Calculado, Estado_RM)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
-            """, (usuario_id, ejercicio_id, Numero_Entrenamiento, serie_rm_max, numero_sesion, rm_max, estado_rm))
+            """, (usuario_id, ejercicio_id, numero_sesion, serie_rm_max, sesion_id, rm_max, estado_rm))
 
             conexion.commit()
             conexion.close()
 
-            # Regresa a pantalla 11 SIN crear sesión nueva (solo cambia pantalla)
             self.manager.current = 'pantalla11'
 
         except Exception as e:

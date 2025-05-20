@@ -2,9 +2,11 @@ from kivymd.app import MDApp
 from datetime import datetime
 from kivy.app import App
 from kivymd.uix.screen import MDScreen
-from kivymd.uix.button import MDRaisedButton
+from kivymd.uix.button import MDRaisedButton, MDFlatButton
+from kivymd.uix.button import MDFloatingActionButtonSpeedDial, MDIconButton
 from kivymd.uix.label import MDLabel
 from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.textfield import MDTextField
 from kivy.uix.modalview import ModalView
 from kivy.clock import Clock
 from kivy.lang import Builder
@@ -67,9 +69,6 @@ class InEntrap(MDScreen):
 
 
     def cargar_series_sesion(self):
-        """
-        Carga y muestra las series de la sesión actual, agrupadas por ejercicio.
-        """
         self.ids.ejercicios_container.clear_widgets()
 
         usuario_id = App.get_running_app().usuario_id 
@@ -77,32 +76,24 @@ class InEntrap(MDScreen):
             conexion = crear_conexion()
             cursor = conexion.cursor()
 
-            # Consultar series y ejercicios para la sesión actual
-            # Ajusta la consulta según tu esquema y nombres de tablas/columnas
             consulta = """
-            SELECT e.Nombre, s.Numero, s.Peso, s.Repeticiones
+            SELECT e.Nombre, s.Numero, s.Peso, s.Repeticiones, s.Id
             FROM Series s
             JOIN Ejercicios e ON s.Ejercicio = e.Id
-            JOIN Sesiones ses ON s.Sesion = ses.Numero_de_Sesion AND ses.Usuario = ?
-            WHERE ses.Numero_de_Sesion = ?
+            WHERE s.Usuario = ? AND s.Sesion = ?
             ORDER BY e.Nombre, s.Numero
             """
             cursor.execute(consulta, (usuario_id, self.nueva_sesion))
             resultados = cursor.fetchall()
-            print(self.nueva_sesion)
-            print(resultados)
 
-            # Agrupar por ejercicio
             from collections import OrderedDict
             agrupado = OrderedDict()
-            for nombre_ej, num_serie, peso, reps in resultados:
+            for nombre_ej, num_serie, peso, reps, serie_id in resultados:
                 if nombre_ej not in agrupado:
                     agrupado[nombre_ej] = []
-                agrupado[nombre_ej].append((num_serie, peso, reps))
+                agrupado[nombre_ej].append((num_serie, peso, reps, serie_id))
 
-            # Crear widgets para mostrarlo
             for nombre_ej, series in agrupado.items():
-                # Título ejercicio
                 label_ej = MDLabel(
                     text=f"[b]{nombre_ej}[/b]",
                     markup=True,
@@ -112,29 +103,40 @@ class InEntrap(MDScreen):
                 )
                 self.ids.ejercicios_container.add_widget(label_ej)
 
-                # Series
-                for num_serie, peso, reps in series:
+                for num_serie, peso, reps, serie_id in series:
                     box = MDBoxLayout(
                         orientation='horizontal',
                         size_hint_y=None,
                         height=dp(25),
                         spacing=dp(10)
                     )
-                    label_serie = MDLabel(text=f"Serie {num_serie}", size_hint_x=0.3)
-                    label_peso = MDLabel(text=f"Peso: {peso} kg", size_hint_x=0.4)
+                    label_serie = MDLabel(text=f"Serie {num_serie}", size_hint_x=0.2)
+                    label_peso = MDLabel(text=f"Peso: {peso} kg", size_hint_x=0.3)
                     label_reps = MDLabel(text=f"Reps: {reps}", size_hint_x=0.3)
                     box.add_widget(label_serie)
                     box.add_widget(label_peso)
                     box.add_widget(label_reps)
 
+                    # Botón modificar
+                    btn_modificar = MDIconButton(
+                        icon="pencil",
+                        user_font_size="20sp",
+                        size_hint=(None, None),
+                        size=(dp(30), dp(30)),
+                        pos_hint={'center_y': 0.5},
+                    )
+                    btn_modificar.bind(
+                        on_release=lambda inst, sid=serie_id, p=peso, r=reps: self.abrir_popup_modificar(sid, p, r)
+                    )
+                    box.add_widget(btn_modificar)
+
                     self.ids.ejercicios_container.add_widget(box)
 
             if not resultados:
-                # Creamos un contenedor más grande para el mensaje
                 container = MDBoxLayout(
                     orientation='vertical',
                     size_hint_y=None,
-                    height=dp(200),  # Puedes ajustar esta altura según tus necesidades
+                    height=dp(200),
                     padding=dp(20)
                 )
                 mensaje = MDLabel(
@@ -146,13 +148,100 @@ class InEntrap(MDScreen):
                 container.add_widget(mensaje)
                 self.ids.ejercicios_container.add_widget(container)
 
-
         except Exception as e:
             print(f"Error al cargar series: {e}")
         finally:
             cursor.close()
             conexion.close()
 
+
+    def abrir_popup_modificar(self, serie_id, peso_actual, reps_actual):
+        from kivy.uix.boxlayout import BoxLayout
+        from kivy.core.window import Window
+
+        layout = BoxLayout(orientation='vertical', padding=20, spacing=15)
+
+        titulo = MDLabel(
+            text="Modificar Serie",
+            size_hint_y=None,
+            height=30,
+            font_style="H6",
+            halign='center'
+        )
+        layout.add_widget(titulo)
+
+        self.peso_input = MDTextField(
+            hint_text="Peso (kg)",
+            text=str(peso_actual),
+            mode="rectangle",
+            input_filter='float',
+            size_hint_y=None,
+            height=40
+        )
+        self.reps_input = MDTextField(
+            hint_text="Repeticiones",
+            text=str(reps_actual),
+            mode="rectangle",
+            input_filter='int',
+            size_hint_y=None,
+            height=40
+        )
+        layout.add_widget(self.peso_input)
+        layout.add_widget(self.reps_input)
+
+        btn_guardar = MDRaisedButton(
+            text="Guardar",
+            size_hint=(1, None),
+            height=40,
+            md_bg_color=(0, 0.5, 1, 1)
+        )
+        btn_guardar.bind(on_release=lambda x: self.guardar_modificacion(serie_id))
+
+        btn_cancelar = MDFlatButton(
+            text="Cancelar",
+            size_hint=(1, None),
+            height=40,
+            text_color=(1, 0, 0, 1)
+        )
+        btn_cancelar.bind(on_release=lambda x: self.popup.dismiss())
+
+        layout.add_widget(btn_guardar)
+        layout.add_widget(btn_cancelar)
+
+        self.popup = ModalView(
+            size_hint=(0.85, None),
+            height=280,
+            auto_dismiss=False,
+            background_color=(0, 0, 0, 0.6)  # Fondo negro semitransparente
+        )
+        self.popup.add_widget(layout)
+        self.popup.open()
+
+    def guardar_modificacion(self, serie_id):
+        try:
+            nuevo_peso = float(self.peso_input.text)
+            nuevas_reps = int(self.reps_input.text)
+        except ValueError:
+            print("Peso o repeticiones no válidos")
+            return
+
+        try:
+            conexion = crear_conexion()
+            cursor = conexion.cursor()
+            cursor.execute(
+                "UPDATE Series SET Peso = ?, Repeticiones = ? WHERE Id = ?",
+                (nuevo_peso, nuevas_reps, serie_id)
+            )
+            conexion.commit()
+            print(f"Serie {serie_id} actualizada con peso {nuevo_peso} y reps {nuevas_reps}")
+        except Exception as e:
+            print(f"Error al actualizar serie: {e}")
+        finally:
+            cursor.close()
+            conexion.close()
+
+        self.popup.dismiss()
+        self.cargar_series_sesion()
     def finalizar_entrenamiento(self, instance=None):
         popup = ModalView(size_hint=(0.8, None), height=dp(200))
 

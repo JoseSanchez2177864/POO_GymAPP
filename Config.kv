@@ -120,7 +120,8 @@
                     md_bg_color: 0.8, 0.1, 0.1, 1
                     size_hint_x: 0.9
                     pos_hint: {"center_x": 0.5}
-                    on_release: app.root.get_screen('pantalla3').cerrar_sesion()
+                    on_release: root.cerrar_sesion()  # Llamar al método directamente de la clase
+
                 Widget:
                     size_hint_x: 1.5
         # Separador fijo

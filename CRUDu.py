@@ -31,8 +31,9 @@ class CRUDup(Screen):
         conexion = crear_conexion()
         cursor = conexion.cursor()
         consulta = """
-        SELECT u.*, r.Descripcion 
+        SELECT u.Id, u.Nombre, u.Apellidos, u.Nombre_Usuario, u.Correo, p.Nombre AS NombrePlan, r.Descripcion AS Rol
         FROM Usuarios u
+        LEFT JOIN Planes p ON u.Planes = p.Id
         LEFT JOIN Usuario_Rol ur ON u.Id = ur.Usuario
         LEFT JOIN Roles r ON ur.Rol = r.Id
         """
@@ -56,7 +57,7 @@ class CRUDup(Screen):
                 lines = [
                     f"Nombre: {usuario[1]} {usuario[2]}     Nombre de Usuario: {usuario[3]}",
                     f"Correo: {usuario[4]}",
-                    f"Plan: {usuario[8]}     Rol: {usuario[-1] if usuario[-1] else 'Sin Rol'}"
+                    f"Plan: {usuario[5] if usuario[5] else 'Sin Plan'}     Rol: {usuario[-1] if usuario[-1] else 'Sin Rol'}"
                 ]
 
                 for i, info in enumerate(lines):
